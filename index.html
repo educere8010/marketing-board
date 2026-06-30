@@ -99,7 +99,7 @@
     .stat-mini span { color: var(--muted); font-size: 11px; font-weight: 800; }
 
     /* 4채널 보드 */
-    .board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .board { display: grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 14px; }
     .col {
       background: var(--panel); border: 1px solid var(--line); border-radius: var(--r);
       box-shadow: var(--shadow); display: flex; flex-direction: column; min-height: 220px;
@@ -458,6 +458,36 @@ CTA: 무료 진단으로 현재 위치 확인</textarea>
           <div id="revenueAdvice"></div>
         </div>
       </div>
+
+      <div class="panel" style="margin-top:16px">
+        <div class="panel-head">
+          <h2>광고 일정 역산표</h2>
+          <p>목표 신규구독자 수에서 필요한 무료진단·방문자·주간 광고 실행량을 거꾸로 계산합니다.</p>
+        </div>
+        <div class="panel-body">
+          <div class="rev-scroll">
+            <table class="rev-table">
+              <thead>
+                <tr>
+                  <th>목표 신규구독</th>
+                  <th>무료진단율</th>
+                  <th>설계실전환율</th>
+                  <th>필요 무료진단</th>
+                  <th>필요 방문자</th>
+                  <th>주간 목표</th>
+                </tr>
+              </thead>
+              <tbody id="reverseRows"></tbody>
+            </table>
+          </div>
+          <div id="reverseSummary" class="revenue-grid" style="margin-top:14px"></div>
+          <div id="reverseSchedule" style="margin-top:14px"></div>
+          <div class="row-actions" style="margin-top:12px">
+            <button class="btn dark" type="button" onclick="applyReversePlan()">역산 일정을 이번 주 보드에 생성</button>
+            <button class="btn" type="button" onclick="exportRevenueWord()">역산표 포함 Word 보고서</button>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- ========== 발행 기록 ========== -->
@@ -583,12 +613,14 @@ CTA: 무료 진단으로 현재 위치 확인</textarea>
     const CLAUDE_KEY = "eva_marketing_claude_settings_v1";
 
     const CHANNELS = [
+      { id: "네이버검색광고", emoji: "🔎", color: "#2b72d6", desc: "무료진단 유입" },
       { id: "블로그", emoji: "✍️", color: "var(--c-blog)", desc: "검색 유입·신뢰" },
       { id: "인스타그램", emoji: "📷", color: "var(--c-insta)", desc: "도달·저장" },
       { id: "카카오채널", emoji: "💬", color: "var(--c-kakao)", desc: "리드·상담" },
       { id: "유튜브", emoji: "▶️", color: "var(--c-youtube)", desc: "탐구 노하우" }
     ];
     const TYPES = {
+      "네이버검색광고": ["검색광고 세팅", "광고 문구", "키워드 점검"],
       "블로그": ["블로그 글", "짧은 정보글"],
       "인스타그램": ["카드뉴스", "릴스 대본", "피드 글"],
       "카카오채널": ["채널 메시지", "무료자료 안내"],
@@ -643,6 +675,7 @@ CTA: 무료 진단으로 현재 위치 확인</textarea>
         hashtags: "#학생부 #세특 #생기부 #탐구주제 #학종 #수시"
       },
       channelTips: [
+        { channel: "네이버검색광고", purpose: "구매 의도 높은 검색 유입 확보", format: "세특·생기부·탐구보고서 키워드 광고", message: "세특 주제 찾기 전에 무료진단", cadence: "매일 점검" },
         { channel: "블로그", purpose: "검색 유입·신뢰 확보", format: "계열별 탐구주제 예시, 설계 사례, 정보글", message: "전문성·정보량으로 신뢰 구축", cadence: "주 2회" },
         { channel: "인스타그램", purpose: "브랜드 인지·학부모 도달", format: "카드뉴스, 후기·Before/After 릴스", message: "세특 주제, 이제 고민 마세요", cadence: "주 3회" },
         { channel: "카카오채널", purpose: "잠재고객 확보·상담 전환", format: "무료 자료 제공, 1:1 상담 안내", message: "무료 탐구주제 리스트 받아가세요", cadence: "상시" },
@@ -674,6 +707,7 @@ CTA: 무료 진단으로 현재 위치 확인</textarea>
         { name: "기준", visitors: 4000, leadRate: 9, materialRate: 18, studioRate: 5, materialUnits: 1.5, adCost: 700000, note: "검색광고+무료진단+자료구매+설계실 전환이 안정화" },
         { name: "공격", visitors: 9000, leadRate: 12, materialRate: 25, studioRate: 8, materialUnits: 1.8, adCost: 1500000, note: "광고와 콘텐츠가 동시에 돌아가고 후기/사례가 쌓인 상태" }
       ],
+      reversePlan: { targetSubs: 100, leadRate: 10, studioRate: 7.5 },
       items: [
         { id: "it-s1", title: "세특 주제 찾기 전, 무료 진단부터 하라는 블로그 글", channel: "블로그", type: "블로그 글", due: addDays(1), status: "초안", hook: "고2 생기부는 활동 수보다 '연결성'이 먼저입니다.", body: "선택과목·탐구·독서가 희망학과 기준으로 이어지는지 점검하는 글. 마지막에 무료 진단 CTA.", cta: "무료 진단으로 현재 위치 확인" },
         { id: "it-s2", title: "세특 주제, 계열만 골라도 끝 — 카드뉴스", channel: "인스타그램", type: "카드뉴스", due: addDays(2), status: "할일", hook: "세특 주제, 계열만 골라도 끝", body: "1장 훅 / 2장 문제 / 3장 비교 / 4장 해결 / 5장 무료 진단 CTA", cta: "무료 주제 리스트 받기" },
@@ -706,6 +740,12 @@ CTA: 무료 진단으로 현재 위치 확인</textarea>
         && rows.some(row => String(row.name || "").includes("학생부 설계실"));
       return hasEvaPrices ? rows : structuredClone(seed.benchmarks);
     }
+    function normalizeReversePlan(plan) {
+      return {
+        ...seed.reversePlan,
+        ...(plan && typeof plan === "object" ? plan : {})
+      };
+    }
 
     function load() {
       try {
@@ -720,6 +760,7 @@ CTA: 무료 진단으로 현재 위치 확인</textarea>
           competitors: Array.isArray(p.competitors) ? p.competitors : seed.competitors,
           benchmarks: normalizeBenchmarks(p.benchmarks),
           revenueScenarios: normalizeRevenueScenarios(p.revenueScenarios),
+          reversePlan: normalizeReversePlan(p.reversePlan),
           items: Array.isArray(p.items) ? p.items : seed.items
         };
       } catch (e) { return structuredClone(seed); }
@@ -1300,9 +1341,66 @@ ${extra || "(없음)"}
       save();
       renderRevenue();
     }
+    function updateReverse(key, value) {
+      const n = Number(value);
+      state.reversePlan = normalizeReversePlan(state.reversePlan);
+      state.reversePlan[key] = Number.isFinite(n) ? n : value;
+      save();
+      renderRevenue();
+    }
+    function calcReverse() {
+      const plan = normalizeReversePlan(state.reversePlan);
+      const targetSubs = Number(plan.targetSubs) || 100;
+      const studioRate = Math.max(0.1, Number(plan.studioRate) || 7.5);
+      const leadRate = Math.max(0.1, Number(plan.leadRate) || 10);
+      const neededLeads = targetSubs / (studioRate / 100);
+      const neededVisitors = neededLeads / (leadRate / 100);
+      return {
+        targetSubs,
+        studioRate,
+        leadRate,
+        neededLeads,
+        neededVisitors,
+        weeklySubs: targetSubs / 4,
+        weeklyLeads: neededLeads / 4,
+        weeklyVisitors: neededVisitors / 4,
+        dailyLeads: neededLeads / 30,
+        dailyVisitors: neededVisitors / 30
+      };
+    }
+    function reverseScheduleRows() {
+      const r = calcReverse();
+      return [
+        { week: "1주차", theme: "세팅·기준 만들기", goal: `무료진단 ${Math.ceil(r.weeklyLeads)}건`, tasks: [
+          "네이버 검색광고 캠페인/광고그룹/키워드 1차 세팅",
+          "무료진단 랜딩 첫 문장과 CTA 점검",
+          "블로그 2편: 세특 주제 추천 전 진단 필요성",
+          "인스타 카드뉴스 3개: 문제 제기형 소재"
+        ]},
+        { week: "2주차", theme: "유입 확대", goal: `방문자 ${Math.ceil(r.weeklyVisitors).toLocaleString("ko-KR")}명`, tasks: [
+          "검색광고 문구 5개 A/B 테스트",
+          "블로그 3편: 고2 생기부·탐구보고서·계열별 세특",
+          "카카오 무료 탐구주제 리스트 배포",
+          "인스타 릴스/카드뉴스 5개 발행"
+        ]},
+        { week: "3주차", theme: "전환 강화", goal: `설계실 ${Math.ceil(r.weeklySubs)}명`, tasks: [
+          "무료진단 완료자 대상 설계실 리타겟팅 문구 발행",
+          "진단 결과 후 자료 1권 추천 + 설계실 제안 흐름 점검",
+          "설계실 FAQ/후기/Before-After 콘텐츠 발행",
+          "카카오 상담 유도 메시지 2회"
+        ]},
+        { week: "4주차", theme: "마감·개선", goal: `월 목표 ${Math.ceil(r.targetSubs)}명 마감`, tasks: [
+          "전환 키워드만 남기고 광고비 재배분",
+          "클릭률 낮은 문구 중단, 무료진단 완료율 높은 문구 확장",
+          "설계실 마감/상담/혜택 메시지 발행",
+          "다음 달 콘텐츠 주제와 광고 예산 재계산"
+        ]}
+      ];
+    }
     function resetRevenue() {
       state.benchmarks = structuredClone(seed.benchmarks);
       state.revenueScenarios = structuredClone(seed.revenueScenarios);
+      state.reversePlan = structuredClone(seed.reversePlan);
       save();
       renderRevenue();
       toast("매출 시나리오 기본값으로 복원했어요.");
@@ -1351,6 +1449,64 @@ ${extra || "(없음)"}
         <div class="tip-row"><b>2단계</b><div>단권 자료 ${money(MATERIAL_PRICE)}는 첫 결제 장벽을 낮추는 상품입니다. 하지만 월매출의 핵심은 설계실 ${money(STUDIO_PRICE)} 전환율입니다.</div></div>
         <div class="tip-row"><b>3단계</b><div>기준 시나리오는 설계실 전환 ${pct(base.studioRate)}를 전제로 합니다. 진단 결과 화면에서 “6개월 설계실로 이어가기” 제안을 반드시 붙이세요.</div></div>
         <div class="tip-row"><b>4단계</b><div>첫 4주는 보수 시나리오의 광고비로 테스트하고, 클릭률보다 무료진단 완료율과 유료전환율을 먼저 기록하세요.</div></div>`;
+      renderReversePlan();
+    }
+
+    function renderReversePlan() {
+      const plan = normalizeReversePlan(state.reversePlan);
+      const r = calcReverse();
+      document.getElementById("reverseRows").innerHTML = `<tr>
+        <td><input type="number" value="${esc(plan.targetSubs)}" onchange="updateReverse('targetSubs',this.value)">명</td>
+        <td><input type="number" step="0.1" value="${esc(plan.leadRate)}" onchange="updateReverse('leadRate',this.value)">%</td>
+        <td><input type="number" step="0.1" value="${esc(plan.studioRate)}" onchange="updateReverse('studioRate',this.value)">%</td>
+        <td><b>${Math.ceil(r.neededLeads).toLocaleString("ko-KR")}건</b><br><small>일 ${Math.ceil(r.dailyLeads)}건</small></td>
+        <td><b>${Math.ceil(r.neededVisitors).toLocaleString("ko-KR")}명</b><br><small>일 ${Math.ceil(r.dailyVisitors).toLocaleString("ko-KR")}명</small></td>
+        <td><b>주 ${Math.ceil(r.weeklySubs)}명 구독</b><br><small>무료진단 ${Math.ceil(r.weeklyLeads)}건 · 방문자 ${Math.ceil(r.weeklyVisitors).toLocaleString("ko-KR")}명</small></td>
+      </tr>`;
+      document.getElementById("reverseSummary").innerHTML = [
+        ["월 신규구독 목표", `${Math.ceil(r.targetSubs)}명`, "학생부 설계실 6개월 신규 결제"],
+        ["필요 무료진단", `${Math.ceil(r.neededLeads).toLocaleString("ko-KR")}건`, `설계실 전환율 ${pct(r.studioRate)} 기준`],
+        ["필요 방문자", `${Math.ceil(r.neededVisitors).toLocaleString("ko-KR")}명`, `무료진단율 ${pct(r.leadRate)} 기준`]
+      ].map(([h,b,s]) => `<div class="rev-card"><h3>${esc(h)}</h3><div class="big">${esc(b)}</div><p>${esc(s)}</p></div>`).join("");
+      document.getElementById("reverseSchedule").innerHTML = reverseScheduleRows().map(row => `
+        <div class="tip-row">
+          <b>${esc(row.week)}<br><span style="color:var(--coral)">${esc(row.theme)}</span></b>
+          <div><b>${esc(row.goal)}</b><ul style="margin:6px 0 0;padding-left:18px">${row.tasks.map(t=>`<li>${esc(t)}</li>`).join("")}</ul></div>
+        </div>`).join("");
+    }
+
+    function applyReversePlan() {
+      const rows = [
+        { day:1, channel:"네이버검색광고", type:"검색광고 세팅", title:"세특·생기부 키워드 광고그룹 1차 세팅", hook:"세특 주제 찾기 전에 무료진단으로 유입", body:"키워드: 세특 주제 추천, 생기부 컨설팅, 탐구보고서 주제, 고2 생기부, 학종 생기부. 광고 문구 5개를 등록하고 무료진단 랜딩으로 연결.", cta:"무료 진단 시작" },
+        { day:2, channel:"블로그", type:"블로그 글", title:"세특 주제 추천 전 무료진단이 필요한 이유", hook:"세특 주제만 찾고 끝내지 마세요.", body:"검색 유입용 정보글. 문제 제기 → 합격생 따라하기의 한계 → 내 생기부 빈틈 진단 → 학생부 설계실 CTA.", cta:"무료 진단으로 현재 위치 확인" },
+        { day:3, channel:"인스타그램", type:"카드뉴스", title:"내 생기부 빈틈 5초 이해 카드뉴스", hook:"열심히 했는데 생기부엔 한 줄?", body:"1장 훅 / 2장 문제 / 3장 Before / 4장 After / 5장 무료진단 CTA.", cta:"내 생기부 빈틈 확인" },
+        { day:5, channel:"카카오채널", type:"무료자료 안내", title:"무료 탐구주제 리스트 배포 메시지", hook:"무료 탐구주제 리스트 받아가세요", body:"무료자료 신청 → 무료진단 → 설계실 안내로 이어지는 카카오 메시지.", cta:"무료 자료 받기" },
+        { day:7, channel:"네이버검색광고", type:"키워드 점검", title:"1주차 광고 문구 클릭률·무료진단 완료율 점검", hook:"클릭보다 무료진단 완료율을 본다", body:"광고 문구별 클릭률, 무료진단 시작, 무료진단 완료를 기록하고 낮은 문구는 중단.", cta:"전환 높은 문구 확장" },
+        { day:9, channel:"블로그", type:"블로그 글", title:"고2 생기부 지금 봐야 할 3가지 빈틈", hook:"고2 생기부는 활동 수보다 연결성이 먼저입니다.", body:"선택과목·탐구·독서 연결성 점검 글. 마지막에 설계실 6개월 관리 제안.", cta:"무료 진단 시작" },
+        { day:11, channel:"인스타그램", type:"릴스 대본", title:"같은 활동, 세특 문장은 이렇게 달라진다", hook:"활동은 같은데 기록은 달라질 수 있습니다.", body:"Before/After 릴스. 전공 연결, 질문, 산출물, 후속 탐구를 보여줌.", cta:"무료 진단으로 확인" },
+        { day:14, channel:"네이버검색광고", type:"광고 문구", title:"무료진단 완료자 리타겟팅 문구 등록", hook:"진단 결과만 보고 끝내지 마세요.", body:"진단 완료자에게 추천자료 1권과 6개월 설계실을 제안하는 문구를 등록.", cta:"이번 주 탐구 시작" },
+        { day:17, channel:"카카오채널", type:"채널 메시지", title:"진단 완료자 설계실 안내 메시지", hook:"빈틈을 확인했다면 이번 주 활동으로 이어가야 합니다.", body:"진단 결과 요약 → 추천 탐구자료 → 6개월 설계실 안내 → 상담/결제 CTA.", cta:"설계실로 이어가기" },
+        { day:20, channel:"유튜브", type:"쇼츠 대본", title:"탐구보고서 작성법 45초 쇼츠", hook:"실제로 먹힌 세특은 이렇게 다릅니다.", body:"탐구보고서가 방법·결과에서 끝나지 않고 한계·후속 질문까지 이어져야 한다는 쇼츠.", cta:"샘플 탐구 설계 보기" },
+        { day:24, channel:"네이버검색광고", type:"키워드 점검", title:"전환 키워드만 남기고 광고비 재배분", hook:"광고비는 클릭이 아니라 진단 완료에 배분", body:"무료진단 완료율 높은 키워드만 남기고 예산을 재배분. 생기부 컨설팅/세특 주제/탐구보고서 주제 비교.", cta:"전환 키워드 확장" },
+        { day:27, channel:"카카오채널", type:"채널 메시지", title:"월말 설계실 마감·상담 안내", hook:"이번 달 진단 결과, 다음 달 기록으로 이어가세요.", body:"무료진단 완료자와 자료 구매자에게 학생부 설계실 6개월 신규구독 안내.", cta:"6개월 설계실 시작" }
+      ];
+      const exists = new Set(state.items.map(i => `${i.title}|${i.due}`));
+      const created = rows.map(row => ({
+        id: uid(),
+        title: row.title,
+        channel: row.channel,
+        type: row.type,
+        due: addDays(row.day),
+        status: "할일",
+        hook: row.hook,
+        body: row.body,
+        cta: row.cta
+      })).filter(item => !exists.has(`${item.title}|${item.due}`));
+      state.items.push(...created);
+      state.weekGoal = `학생부 설계실 월 ${Math.ceil(calcReverse().targetSubs)}명 신규구독: 무료진단 ${Math.ceil(calcReverse().neededLeads).toLocaleString("ko-KR")}건 만들기`;
+      save();
+      toast(`${created.length}개 광고 역산 일정을 보드에 만들었어요.`);
+      setView("board");
     }
 
     /* ---------- 내보내기 ---------- */
@@ -1421,6 +1577,8 @@ ${extra || "(없음)"}
         </tr>`;
       }).join("");
       const bench = benchmarks.map(b => `<li><b>${esc(b.name)}</b> · ${esc(b.price)}<br>${esc(b.signal)}<br><span>${esc(b.implication)}</span></li>`).join("");
+      const reverse = calcReverse();
+      const schedule = reverseScheduleRows().map(row => `<li><b>${esc(row.week)} · ${esc(row.theme)}</b> (${esc(row.goal)})<br>${row.tasks.map(t=>`- ${esc(t)}`).join("<br>")}</li>`).join("");
       return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>에바연 매출 시나리오</title>
       <style>body{font-family:"Malgun Gothic",sans-serif;color:#172033;line-height:1.65}
       h1{color:#11203f}h2{color:#22483f;font-size:18px;margin-top:24px}
@@ -1431,6 +1589,9 @@ ${extra || "(없음)"}
       <div class="box"><b>핵심 가정</b><p>자료 단권 ${money(MATERIAL_PRICE)}과 학생부 설계실 6개월 ${money(STUDIO_PRICE)}을 기준으로, 방문자 → 무료진단 → 자료구매 → 설계실 전환 매출을 나누어 추정합니다. 실제 매출 보장이 아니라 의사결정용 시나리오입니다.</p></div>
       <h2>경쟁사 가격·포지션 앵커</h2><ul>${bench}</ul>
       <h2>매출 시나리오</h2><table><thead><tr><th>구분</th><th>월 방문자</th><th>무료진단율</th><th>자료구매율</th><th>설계실전환율</th><th>평균 자료권수</th><th>무료진단</th><th>자료판매</th><th>설계실</th><th>월매출</th><th>광고 후</th></tr></thead><tbody>${rows}</tbody></table>
+      <h2>월 ${Math.ceil(reverse.targetSubs)}명 신규구독 광고 일정 역산</h2>
+      <div class="box"><p>필요 무료진단 ${Math.ceil(reverse.neededLeads).toLocaleString("ko-KR")}건 · 필요 방문자 ${Math.ceil(reverse.neededVisitors).toLocaleString("ko-KR")}명 · 주간 목표 ${Math.ceil(reverse.weeklySubs)}명 신규구독</p></div>
+      <ol>${schedule}</ol>
       <h2>실행 우선순위</h2>
       <ol><li>무료진단 랜딩을 먼저 확정하고, 모든 광고·블로그·카카오 CTA를 무료진단으로 통일합니다.</li>
       <li>자료 단권은 첫 결제 장벽을 낮추는 입구 상품으로 쓰고, 핵심 매출은 6개월 학생부 설계실 전환으로 설계합니다.</li>
@@ -1488,6 +1649,7 @@ ${extra || "(없음)"}
             competitors: p.competitors || seed.competitors,
             benchmarks: normalizeBenchmarks(p.benchmarks),
             revenueScenarios: normalizeRevenueScenarios(p.revenueScenarios),
+            reversePlan: normalizeReversePlan(p.reversePlan),
             items: p.items
           };
           save(); renderBoard(); document.getElementById("menuDialog").close(); toast("백업을 불러왔어요.");
