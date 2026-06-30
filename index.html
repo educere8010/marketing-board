@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>에바연 마케팅 관리실</title>
+  <title>에바연 마케팅 작업실</title>
   <style>
     :root {
       --navy: #11203f;
@@ -16,853 +16,472 @@
       --panel: #fff;
       --line: #e3ddd0;
       --ink: #172033;
-      --muted: #687386;
-      --blue: #dfe7f0;
-      --mint: #dcebe4;
-      --rose: #f7d9d0;
+      --muted: #6b7689;
       --shadow: 0 14px 34px rgba(17, 32, 63, .09);
-      --r: 8px;
+      --r: 12px;
+      /* 채널 색 */
+      --c-blog: #2f8a5e;
+      --c-insta: #c2418a;
+      --c-kakao: #d9a400;
+      --c-youtube: #d8442f;
     }
-
     * { box-sizing: border-box; }
     body {
       margin: 0;
       color: var(--ink);
       background: var(--paper);
       font-family: Pretendard, "Apple SD Gothic Neo", "Noto Sans KR", system-ui, sans-serif;
-      letter-spacing: 0;
     }
     button, input, select, textarea { font: inherit; }
     button { cursor: pointer; }
     a { color: inherit; text-decoration: none; }
 
-    .app { min-height: 100vh; display: grid; grid-template-columns: 248px minmax(0, 1fr); }
-    .sidebar {
-      position: sticky;
-      top: 0;
-      height: 100vh;
-      padding: 22px 18px;
-      color: #fff;
-      background: var(--navy);
-      display: flex;
-      flex-direction: column;
-      gap: 16px;
-    }
-    .brand { display: flex; gap: 10px; align-items: center; min-height: 48px; }
-    .brand-mark {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      display: grid;
-      place-items: center;
-      background: var(--gold);
-      color: var(--navy);
-      font-weight: 950;
-      font-size: 18px;
-      flex: none;
-    }
-    .brand strong { display: block; font-size: 16px; line-height: 1.25; }
-    .brand span { display: block; color: #b9c4d6; font-size: 11px; margin-top: 3px; }
-    .nav { display: grid; gap: 7px; margin-top: 10px; }
-    .nav button, .side-action {
-      border: 1px solid rgba(255,255,255,.13);
-      border-radius: var(--r);
-      background: rgba(255,255,255,.06);
-      color: #e9eef7;
-      min-height: 42px;
-      padding: 0 12px;
-      text-align: left;
-      font-size: 13px;
-      font-weight: 850;
-    }
-    .nav button.active { background: var(--gold); color: var(--navy); border-color: var(--gold); }
-    .side-box {
-      margin-top: auto;
-      border: 1px solid rgba(255,255,255,.13);
-      border-radius: var(--r);
-      padding: 14px;
-      background: rgba(255,255,255,.06);
-    }
-    .side-box b { display: block; font-size: 12px; margin-bottom: 7px; }
-    .side-box p { margin: 0; color: #cbd5e5; font-size: 12px; line-height: 1.6; }
-
-    .main { min-width: 0; padding: 24px; }
+    /* 상단 바 */
     .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 16px;
-      margin-bottom: 16px;
+      position: sticky; top: 0; z-index: 20;
+      background: var(--navy); color: #fff;
+      display: flex; align-items: center; gap: 14px;
+      padding: 12px 20px;
     }
-    h1 { margin: 0; color: var(--navy); font-size: 28px; line-height: 1.25; }
-    .lead { margin: 7px 0 0; color: var(--muted); font-size: 14px; line-height: 1.55; }
-    .toolbar { display: flex; gap: 8px; flex-wrap: wrap; justify-content: flex-end; }
+    .brand { display: flex; align-items: center; gap: 10px; }
+    .brand-mark {
+      width: 38px; height: 38px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: var(--gold); color: var(--navy);
+      font-weight: 950; font-size: 17px; flex: none;
+    }
+    .brand strong { display: block; font-size: 15px; line-height: 1.2; }
+    .brand span { display: block; color: #b9c4d6; font-size: 11px; margin-top: 2px; }
+    .nav { display: flex; gap: 6px; margin-left: 8px; }
+    .nav button {
+      border: 0; border-radius: 999px;
+      background: rgba(255,255,255,.08); color: #e9eef7;
+      min-height: 38px; padding: 0 16px; font-size: 13px; font-weight: 850;
+    }
+    .nav button.active { background: var(--gold); color: var(--navy); }
+    .top-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+    .top-right .btn { min-height: 38px; }
+
+    .wrap { max-width: 1180px; margin: 0 auto; padding: 20px; }
+
     .btn {
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      min-height: 38px;
-      padding: 0 12px;
-      background: #fff;
-      color: var(--ink);
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      gap: 7px;
-      font-size: 13px;
-      font-weight: 850;
+      border: 1px solid var(--line); border-radius: 999px;
+      min-height: 40px; padding: 0 16px; background: #fff; color: var(--ink);
+      display: inline-flex; align-items: center; justify-content: center; gap: 7px;
+      font-size: 13px; font-weight: 850;
     }
-    .btn.primary { background: var(--green); border-color: var(--green); color: #fff; }
-    .btn.coral { background: var(--coral); border-color: var(--coral); color: #fff; }
-    .btn.ghost { background: transparent; }
-    .btn.danger { background: #fff8f5; border-color: #e8b5a8; color: #a83e23; }
-    .btn:disabled { opacity: .6; cursor: progress; }
+    .btn.primary { background: var(--coral); border-color: var(--coral); color: #fff; }
+    .btn.dark { background: var(--green); border-color: var(--green); color: #fff; }
+    .btn.ghost { background: transparent; border-color: rgba(255,255,255,.25); color: #fff; }
+    .btn.sm { min-height: 32px; padding: 0 11px; font-size: 12px; border-radius: 8px; }
+    .btn:disabled { opacity: .55; cursor: progress; }
 
-    .grid { display: grid; gap: 14px; }
-    .stats { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .stat {
-      min-height: 110px;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      box-shadow: var(--shadow);
-      padding: 16px;
-    }
-    .stat span { color: var(--muted); font-size: 12px; font-weight: 850; }
-    .stat strong { display: block; margin-top: 9px; color: var(--navy); font-size: 28px; }
-    .stat small { display: block; margin-top: 5px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+    /* 페이지 헤더 */
+    .page-head { margin-bottom: 16px; }
+    .page-head h1 { margin: 0; color: var(--navy); font-size: 24px; }
+    .page-head p { margin: 6px 0 0; color: var(--muted); font-size: 14px; }
 
-    .layout { display: grid; grid-template-columns: minmax(0, 1.45fr) 370px; gap: 14px; margin-top: 14px; }
-    .panel {
-      min-width: 0;
-      background: var(--panel);
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      box-shadow: var(--shadow);
+    /* 이번 주 목표 + 통계 */
+    .goalbar {
+      display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
+      background: var(--panel); border: 1px solid var(--line); border-radius: var(--r);
+      box-shadow: var(--shadow); padding: 14px 16px; margin-bottom: 16px;
     }
-    .panel-head {
-      padding: 16px;
-      border-bottom: 1px solid var(--line);
-      display: flex;
-      justify-content: space-between;
-      gap: 12px;
-      align-items: center;
+    .goalbar .goal-label { color: var(--coral); font-weight: 950; font-size: 12px; }
+    .goalbar input.goal {
+      flex: 1; min-width: 200px; border: 0; background: transparent;
+      font-size: 16px; font-weight: 850; color: var(--navy); padding: 4px 0;
     }
+    .goalbar input.goal:focus { outline: none; border-bottom: 2px solid var(--gold); }
+    .stat-mini { display: flex; gap: 18px; }
+    .stat-mini div { text-align: center; }
+    .stat-mini b { display: block; color: var(--navy); font-size: 20px; line-height: 1; }
+    .stat-mini span { color: var(--muted); font-size: 11px; font-weight: 800; }
+
+    /* 4채널 보드 */
+    .board { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .col {
+      background: var(--panel); border: 1px solid var(--line); border-radius: var(--r);
+      box-shadow: var(--shadow); display: flex; flex-direction: column; min-height: 220px;
+    }
+    .col-head {
+      padding: 13px 14px; border-bottom: 1px solid var(--line);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .col-dot { width: 11px; height: 11px; border-radius: 50%; flex: none; }
+    .col-head b { font-size: 14px; color: var(--navy); }
+    .col-head .cnt { color: var(--muted); font-size: 12px; font-weight: 800; }
+    .col-head .add { margin-left: auto; }
+    .add {
+      width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--line);
+      background: #fff; color: var(--green); font-size: 18px; font-weight: 900;
+      display: grid; place-items: center; line-height: 1;
+    }
+    .col-body { padding: 11px; display: grid; gap: 10px; }
+    .col-tip { padding: 0 14px 12px; color: var(--muted); font-size: 11px; line-height: 1.5; }
+
+    .card {
+      border: 1px solid var(--line); border-radius: 10px; background: #fff;
+      padding: 11px 12px;
+    }
+    .card.done { background: #f4f7f4; opacity: .82; }
+    .card h4 { margin: 0; font-size: 13.5px; color: var(--navy); line-height: 1.4; }
+    .card.done h4 { text-decoration: line-through; color: var(--muted); }
+    .card .hook { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5;
+      display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+    .card-meta { display: flex; align-items: center; gap: 6px; margin-top: 9px; flex-wrap: wrap; }
+    .pill { display: inline-flex; align-items: center; min-height: 21px; border-radius: 999px;
+      padding: 0 8px; font-size: 10.5px; font-weight: 900; }
+    .pill.todo { background: #fdeede; color: #9a4a1f; }
+    .pill.draft { background: #e2efe9; color: #245548; }
+    .pill.live { background: #dce8f6; color: #1f436b; }
+    .pill.week { background: #fff0c7; color: #6f5a16; }
+    .card-actions { display: flex; gap: 5px; margin-top: 10px; flex-wrap: wrap; }
+    .card-actions .ico {
+      border: 1px solid var(--line); border-radius: 7px; background: #fff;
+      min-height: 30px; padding: 0 9px; font-size: 12px; font-weight: 850; color: var(--ink);
+      display: inline-flex; align-items: center; gap: 4px;
+    }
+    .card-actions .ico.gen { background: #fff6f2; border-color: #f0c3b2; color: var(--coral); }
+    .card-actions .ico.done { background: var(--green); border-color: var(--green); color: #fff; }
+    .col-empty { color: var(--muted); font-size: 12px; text-align: center; padding: 18px 8px;
+      border: 1px dashed #cfc6b6; border-radius: 8px; line-height: 1.5; }
+
+    .done-section { margin-top: 18px; }
+    .done-section summary {
+      cursor: pointer; font-weight: 850; color: var(--navy); font-size: 14px;
+      padding: 10px 0; list-style: none;
+    }
+    .done-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
+
+    /* 패널 (생성/자료실) */
+    .panel { background: var(--panel); border: 1px solid var(--line); border-radius: var(--r);
+      box-shadow: var(--shadow); margin-bottom: 16px; }
+    .panel-head { padding: 16px; border-bottom: 1px solid var(--line); }
     .panel-head h2 { margin: 0; color: var(--navy); font-size: 17px; }
-    .panel-head p { margin: 4px 0 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+    .panel-head p { margin: 5px 0 0; color: var(--muted); font-size: 13px; }
     .panel-body { padding: 16px; }
 
+    /* 채널 선택 (생성실) */
+    .chan-pick { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-bottom: 14px; }
+    .chan-pick label {
+      border: 2px solid var(--line); border-radius: 10px; padding: 12px; text-align: center;
+      cursor: pointer; background: #fff; font-weight: 850; font-size: 13px; color: var(--ink);
+      display: flex; flex-direction: column; align-items: center; gap: 6px;
+    }
+    .chan-pick input { display: none; }
+    .chan-pick label .em { font-size: 22px; line-height: 1; }
+    .chan-pick label small { color: var(--muted); font-weight: 700; font-size: 11px; }
+    .chan-pick input:checked + .inner { }
+
+    .field { margin-bottom: 12px; }
+    .field label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 12px; font-weight: 900; }
     input, select, textarea {
-      width: 100%;
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      background: #fff;
-      color: var(--ink);
-      padding: 10px 11px;
-      outline: none;
+      width: 100%; border: 1px solid var(--line); border-radius: 9px; background: #fff;
+      color: var(--ink); padding: 10px 11px; outline: none;
     }
-    textarea { min-height: 92px; resize: vertical; line-height: 1.62; }
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--green2);
-      box-shadow: 0 0 0 3px rgba(50, 107, 95, .12);
-    }
-    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-    .field.full { grid-column: 1 / -1; }
-    .field label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 11px; font-weight: 900; }
-    .filters { display: grid; grid-template-columns: minmax(220px, 1fr) 170px 160px 140px; gap: 8px; margin-bottom: 12px; }
+    textarea { min-height: 84px; resize: vertical; line-height: 1.6; }
+    input:focus, select:focus, textarea:focus { border-color: var(--green2); box-shadow: 0 0 0 3px rgba(50,107,95,.12); }
+    .two { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
-    .tabs { display: flex; flex-wrap: wrap; gap: 6px; }
-    .tab {
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      background: #fff;
-      min-height: 34px;
-      padding: 0 10px;
-      color: var(--muted);
-      font-size: 12px;
-      font-weight: 850;
-    }
-    .tab.active { background: var(--green); color: #fff; border-color: var(--green); }
-
-    .table-wrap { overflow: auto; border: 1px solid var(--line); border-radius: var(--r); }
-    table { width: 100%; min-width: 820px; border-collapse: collapse; background: #fff; }
-    th, td { padding: 12px 11px; border-bottom: 1px solid #efe8dc; text-align: left; vertical-align: top; font-size: 13px; }
-    th { position: sticky; top: 0; z-index: 1; background: #fbf8f1; color: var(--muted); font-size: 11px; letter-spacing: .04em; }
-    tr:last-child td { border-bottom: 0; }
-    td strong { color: var(--navy); }
-    td small { display: block; margin-top: 4px; color: var(--muted); line-height: 1.5; }
-
-    .pill {
-      display: inline-flex;
-      align-items: center;
-      min-height: 24px;
-      border-radius: 999px;
-      padding: 0 8px;
-      font-size: 11px;
-      font-weight: 900;
-      white-space: nowrap;
-    }
-    .plan { background: var(--blue); color: #24405d; }
-    .make { background: var(--gold); color: #684d16; }
-    .ready { background: var(--mint); color: #245548; }
-    .live { background: #d6ece9; color: #145f57; }
-    .done { background: #e9edf5; color: #536079; }
-    .high { background: #ffe2d9; color: #a83e23; }
-    .mid { background: #fff0c7; color: #766018; }
-    .low { background: #e5efe8; color: #315c4f; }
-
-    .row-actions { display: flex; flex-wrap: wrap; gap: 6px; }
-    .mini {
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      background: #fff;
-      min-height: 30px;
-      padding: 0 8px;
-      font-size: 12px;
-      font-weight: 850;
-    }
-
-    .calendar-head { display: flex; justify-content: space-between; gap: 12px; align-items: center; margin-bottom: 12px; }
-    .calendar-title { color: var(--navy); font-size: 18px; font-weight: 950; }
-    .month { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; }
-    .weekday, .day { border: 1px solid var(--line); border-radius: var(--r); background: #fff; }
-    .weekday { min-height: 34px; display: grid; place-items: center; color: var(--muted); font-size: 11px; font-weight: 900; background: #fbf8f1; }
-    .day { min-height: 112px; padding: 8px; }
-    .day.off { background: #faf7f0; color: #a8a093; }
-    .day b { color: var(--navy); font-size: 12px; }
-    .dot {
-      display: block;
-      width: 100%;
-      margin-top: 6px;
-      padding: 5px 6px;
-      border: 0;
-      border-radius: 6px;
-      background: var(--mint);
-      color: #244d44;
+    .topic-chips { display: flex; flex-wrap: wrap; gap: 7px; margin-top: 9px; }
+    .topic-chip {
+      border: 1px solid #f0c3b2; border-radius: 999px; background: #fff6f2;
+      color: #9a4a1f; padding: 7px 12px; font-size: 12.5px; font-weight: 800; line-height: 1.35;
       text-align: left;
-      font-size: 11px;
-      font-weight: 850;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
     }
+    .topic-chip:hover { background: #fbe5db; }
+    .topic-chip.ai { border-color: #c9d6cb; background: #eef4ef; color: #245548; }
 
-    .campaign-list, .competitor-list { display: grid; gap: 10px; }
-    .campaign {
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      background: #fff;
-      padding: 13px;
+    .dup-warn {
+      margin-top: 9px; border: 1px solid #f0c9b2; border-radius: 9px; background: #fff4ed;
+      padding: 10px 12px; color: #9a4a1f; font-size: 12.5px; line-height: 1.55;
     }
-    .campaign-top { display: flex; justify-content: space-between; gap: 12px; align-items: flex-start; }
-    .campaign h3 { margin: 0; color: var(--navy); font-size: 15px; }
-    .campaign p { margin: 7px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
-    .reference-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-    .reference-grid.three { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-    .strategy-card {
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      background: #fff;
-      padding: 13px;
-      min-height: 112px;
-    }
-    .strategy-card b { display: block; color: var(--navy); font-size: 13px; margin-bottom: 6px; }
-    .strategy-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
-    .quote-card {
-      border: 1px solid #eadcc3;
-      border-radius: var(--r);
-      background: #fffaf0;
-      padding: 14px;
-      color: var(--navy);
-      font-size: 14px;
-      font-weight: 900;
-      line-height: 1.55;
-    }
-    .reference-table { overflow: auto; border: 1px solid var(--line); border-radius: var(--r); background: #fff; }
-    .reference-table table { min-width: 620px; box-shadow: none; }
-    .reference-table th, .reference-table td { font-size: 12px; }
-    .reference-stack { display: grid; gap: 10px; }
-    .progress { height: 8px; border-radius: 999px; background: #eef1f4; overflow: hidden; margin-top: 10px; }
-    .progress i { display: block; height: 100%; background: var(--green2); }
+    .dup-warn b { color: #7a2f12; }
+    .dup-warn ul { margin: 6px 0 0; padding-left: 16px; }
+
+    /* 발행 기록 */
+    .hist-month { margin: 18px 0 8px; color: var(--navy); font-size: 14px; font-weight: 900; }
+    .hist-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; }
 
     .ai-result {
-      min-height: 280px;
-      border: 1px solid var(--line);
-      border-radius: var(--r);
-      background: #fbf8f1;
-      padding: 14px;
-      white-space: pre-wrap;
-      line-height: 1.65;
-      color: var(--ink);
-      font-size: 13px;
+      min-height: 200px; border: 1px solid var(--line); border-radius: 10px; background: #fbf8f1;
+      padding: 14px; white-space: pre-wrap; line-height: 1.65; color: var(--ink); font-size: 13px;
     }
-    .hint {
-      border: 1px solid #eadcc3;
-      border-radius: var(--r);
-      background: #fffaf0;
-      padding: 12px;
-      color: #715a24;
-      font-size: 12px;
-      line-height: 1.6;
+    .row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .hint { border: 1px solid #eadcc3; border-radius: 10px; background: #fffaf0; padding: 12px;
+      color: #715a24; font-size: 12px; line-height: 1.6; }
+    details.api { margin-top: 14px; border: 1px solid var(--line); border-radius: 10px; }
+    details.api summary { cursor: pointer; padding: 12px 14px; font-weight: 850; color: var(--navy); font-size: 13px; }
+    details.api .api-body { padding: 0 14px 14px; }
+
+    /* 자료실 */
+    .quote {
+      background: #fffaf0; border: 1px solid #eadcc3; border-radius: var(--r);
+      padding: 18px; color: var(--navy); font-size: 17px; font-weight: 900; line-height: 1.5;
     }
-    .empty {
-      border: 1px dashed #cfc6b6;
-      border-radius: var(--r);
-      padding: 22px;
-      background: #fbf8f1;
-      text-align: center;
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.6;
-    }
-    .hidden { display: none !important; }
-    .toast {
-      position: fixed;
-      right: 20px;
-      bottom: 20px;
-      z-index: 30;
-      border-radius: var(--r);
-      background: var(--navy);
-      color: #fff;
-      padding: 12px 14px;
-      box-shadow: var(--shadow);
-      opacity: 0;
-      transform: translateY(10px);
-      transition: .2s ease;
-      font-size: 13px;
-      font-weight: 850;
-    }
+    .quote small { display: block; margin-top: 8px; color: #715a24; font-size: 13px; font-weight: 800; }
+    .lib-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+    .lib-card { border: 1px solid var(--line); border-radius: 10px; background: #fff; padding: 14px; }
+    .lib-card .tag { display: inline-block; font-size: 11px; font-weight: 900; color: #fff;
+      padding: 2px 8px; border-radius: 999px; margin-bottom: 8px; }
+    .lib-card h4 { margin: 0 0 6px; color: var(--navy); font-size: 14px; line-height: 1.45; }
+    .lib-card p { margin: 0; color: var(--muted); font-size: 12.5px; line-height: 1.6; }
+    .lib-card .cta { margin-top: 8px; font-size: 12px; color: var(--green2); font-weight: 850; }
+    .copybtn { margin-top: 9px; }
+    .tip-row { display: grid; grid-template-columns: 110px 1fr; gap: 8px; padding: 9px 0; border-bottom: 1px solid #efe8dc; font-size: 13px; }
+    .tip-row:last-child { border-bottom: 0; }
+    .tip-row b { color: var(--navy); }
+
+    /* 다이얼로그 */
+    dialog { border: 0; border-radius: var(--r); padding: 0; width: min(620px, calc(100% - 28px));
+      box-shadow: 0 30px 90px rgba(17,32,63,.24); }
+    dialog .panel-head { display: flex; justify-content: space-between; align-items: center; }
+
+    .toast { position: fixed; right: 20px; bottom: 20px; z-index: 40; border-radius: 10px;
+      background: var(--navy); color: #fff; padding: 12px 15px; box-shadow: var(--shadow);
+      opacity: 0; transform: translateY(10px); transition: .2s ease; font-size: 13px; font-weight: 850; }
     .toast.show { opacity: 1; transform: translateY(0); }
+    .hidden { display: none !important; }
 
-    dialog {
-      border: 0;
-      border-radius: var(--r);
-      padding: 0;
-      width: min(880px, calc(100% - 28px));
-      box-shadow: 0 30px 90px rgba(17, 32, 63, .24);
+    @media (max-width: 960px) {
+      .board { grid-template-columns: repeat(2, 1fr); }
+      .chan-pick { grid-template-columns: repeat(2, 1fr); }
+      .lib-grid { grid-template-columns: 1fr; }
+      .nav button { padding: 0 12px; }
     }
-
-    @media (max-width: 1120px) {
-      .app { grid-template-columns: 1fr; }
-      .sidebar { position: static; height: auto; }
-      .nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
-      .side-box { margin-top: 0; }
-      .layout { grid-template-columns: 1fr; }
-      .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .reference-grid, .reference-grid.three { grid-template-columns: 1fr; }
-    }
-    @media (max-width: 760px) {
-      .main { padding: 16px; }
-      .topbar { display: grid; }
-      .toolbar { justify-content: flex-start; }
-      .nav { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-      .stats { grid-template-columns: 1fr; }
-      .filters, .form-grid { grid-template-columns: 1fr; }
-      .month { min-width: 720px; }
-      .calendar-scroll { overflow: auto; }
+    @media (max-width: 620px) {
+      .topbar { flex-wrap: wrap; }
+      .nav { order: 3; width: 100%; }
+      .nav button { flex: 1; }
+      .board { grid-template-columns: 1fr; }
+      .chan-pick { grid-template-columns: 1fr 1fr; }
+      .two { grid-template-columns: 1fr; }
+      .stat-mini { gap: 12px; }
     }
   </style>
 </head>
 <body>
-  <div class="app">
-    <aside class="sidebar">
-      <div class="brand">
-        <div class="brand-mark">E</div>
-        <div>
-          <strong>에바연 마케팅 관리실</strong>
-          <span>개인용 콘텐츠 운영 앱</span>
-        </div>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">E</div>
+      <div>
+        <strong>에바연 마케팅 작업실</strong>
+        <span>혼자서도 가볍게 — 블로그·인스타·카카오·유튜브</span>
+      </div>
+    </div>
+    <nav class="nav">
+      <button class="active" data-view="board" type="button">이번 주</button>
+      <button data-view="make" type="button">콘텐츠 만들기</button>
+      <button data-view="history" type="button">발행 기록</button>
+      <button data-view="library" type="button">자료실</button>
+    </nav>
+    <div class="top-right">
+      <button class="btn ghost" type="button" onclick="exportWordPack()">주간 실행팩</button>
+      <button class="btn ghost" type="button" onclick="openMenu()">⋯</button>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <!-- ========== 이번 주 보드 ========== -->
+    <section id="view-board" class="view">
+      <div class="goalbar">
+        <span class="goal-label">이번 주 목표</span>
+        <input class="goal" id="weekGoal" placeholder="예: 무료 진단 신청 10건 만들기" oninput="saveGoal()">
+        <div class="stat-mini" id="boardStats"></div>
       </div>
 
-      <nav class="nav" aria-label="앱 화면">
-        <button class="active" data-view="dashboard" type="button">대시보드</button>
-        <button data-view="calendar" type="button">일정표</button>
-        <button data-view="content" type="button">콘텐츠</button>
-        <button data-view="ai" type="button">Claude 생성실</button>
-        <button data-view="campaigns" type="button">캠페인</button>
-        <button data-view="references" type="button">참고자료</button>
-      </nav>
-
-      <button class="side-action" type="button" onclick="openEditor()">새 콘텐츠 등록</button>
-
-      <div class="side-box">
-        <b>저장 방식</b>
-        <p>콘텐츠와 Claude 설정은 이 브라우저의 localStorage에 저장됩니다. API 키는 코드에 적지 않습니다.</p>
-      </div>
-    </aside>
-
-    <main class="main">
-      <div class="topbar">
-        <div>
-          <h1 id="pageTitle">마케팅 일정과 콘텐츠를 한곳에서 관리합니다</h1>
-          <p class="lead" id="pageLead">광고 소재, 카드뉴스, 릴스, 블로그 글, 캠페인 일정을 개인용 작업판으로 정리하세요.</p>
-        </div>
-        <div class="toolbar">
-          <button class="btn coral" type="button" onclick="setView('ai')">Claude로 생성</button>
-          <button class="btn primary" type="button" onclick="openEditor()">콘텐츠 추가</button>
-          <button class="btn" type="button" onclick="exportJson()">JSON 내보내기</button>
-          <label class="btn ghost" for="importFile">JSON 불러오기</label>
-          <input id="importFile" class="hidden" type="file" accept="application/json,.json" onchange="importJson(this.files[0]); this.value=''">
-        </div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+        <button class="btn dark" type="button" onclick="setView('make')">＋ Claude로 콘텐츠 만들기</button>
+        <button class="btn" type="button" onclick="autoFillWeek()">4채널 이번 주 자동 채우기</button>
       </div>
 
-      <section id="view-dashboard" class="view">
-        <div class="grid stats" id="stats"></div>
-        <div class="layout">
-          <section class="panel">
-            <div class="panel-head">
-              <div>
-                <h2>이번 주 실행 목록</h2>
-                <p>마감일이 가까운 콘텐츠와 광고 작업입니다.</p>
-              </div>
-              <button class="btn" type="button" onclick="setView('content')">전체 보기</button>
-            </div>
-            <div class="panel-body" id="upcomingList"></div>
-            <div class="panel-body" style="border-top:1px solid var(--line)">
-              <div class="panel-head" style="padding:0 0 12px;border:0">
-                <div>
-                  <h2>검토 대기 초안</h2>
-                  <p>자동 생산 후 사람이 확인하고 수정할 콘텐츠입니다.</p>
-                </div>
-                <button class="btn" type="button" onclick="showReviewQueue()">검토함 보기</button>
-              </div>
-              <div id="reviewQueue"></div>
-            </div>
-          </section>
+      <div class="board" id="board"></div>
 
-          <aside class="panel">
-            <div class="panel-head">
-              <div>
-                <h2>오늘의 초점</h2>
-                <p>전환을 만드는 메시지 기준입니다.</p>
-              </div>
-            </div>
-            <div class="panel-body">
-              <div class="campaign">
-                <span class="pill high">핵심 포지션</span>
-                <h3 style="margin-top:10px">세특 주제보다 먼저, 내 생기부의 빈틈 진단</h3>
-                <p>무료 진단을 첫 전환 목표로 두고, 탐구·독서·세특·수능최저를 한 흐름으로 보여주세요.</p>
-              </div>
-              <div style="height:10px"></div>
-              <div class="campaign">
-                <span class="pill live">생성 자동화</span>
-                <h3 style="margin-top:10px">Claude 생성실에서 바로 초안 만들기</h3>
-                <p>주제, 카드뉴스, 릴스, 블로그, 광고 문구를 생성한 뒤 콘텐츠 일정으로 저장할 수 있습니다.</p>
-              </div>
-            </div>
-          </aside>
-        </div>
-      </section>
+      <div style="margin-top:18px">
+        <button class="btn" type="button" onclick="setView('history')">📚 발행 기록 보기 (<span id="donePeek">0</span>개)</button>
+      </div>
+    </section>
 
-      <section id="view-calendar" class="view hidden">
-        <section class="panel">
-          <div class="panel-head">
-            <div>
-              <h2>월간 마케팅 일정</h2>
-              <p>콘텐츠 발행일과 광고 시작일을 달력으로 확인합니다.</p>
+    <!-- ========== 콘텐츠 만들기 ========== -->
+    <section id="view-make" class="view hidden">
+      <div class="page-head">
+        <h1>콘텐츠 만들기</h1>
+        <p>채널 고르고 → 주제 한 줄 적고 → 생성하기. 결과는 바로 이번 주 보드에 저장돼요.</p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-body">
+          <div class="field"><label>어디에 올릴 콘텐츠인가요?</label></div>
+          <div class="chan-pick" id="chanPick"></div>
+
+          <div class="two">
+            <div class="field">
+              <label for="mkType">콘텐츠 형식</label>
+              <select id="mkType"></select>
             </div>
-            <div class="row-actions">
-              <button class="btn" type="button" onclick="moveMonth(-1)">이전 달</button>
-              <button class="btn" type="button" onclick="moveMonth(1)">다음 달</button>
+            <div class="field">
+              <label for="mkTarget">누구에게</label>
+              <input id="mkTarget" value="고1·고2 학부모">
             </div>
           </div>
-          <div class="panel-body">
-            <div class="calendar-head">
-              <div class="calendar-title" id="calendarTitle"></div>
-              <button class="btn primary" type="button" onclick="openEditor()">일정 추가</button>
+          <div class="field">
+            <label for="mkTopic">주제 / 하고 싶은 말 (한 줄이면 충분)</label>
+            <input id="mkTopic" placeholder="예: 세특 주제만 찾다 끝나는 학생, 무료 진단부터 하라는 이야기" oninput="checkDuplicate()">
+            <div id="dupWarn" class="dup-warn" style="display:none"></div>
+            <div class="row-actions" style="margin-top:9px">
+              <button class="btn sm" type="button" onclick="suggestTopics(false)">💡 주제 추천받기</button>
+              <button class="btn sm" id="topicMoreBtn" type="button" style="display:none" onclick="suggestTopics(true)">다른 주제 보기</button>
+              <button class="btn sm" id="aiTopicBtn" type="button" style="display:none" onclick="aiTopics()">✦ Claude로 새 주제 10개</button>
             </div>
-            <div class="calendar-scroll">
-              <div class="month" id="monthGrid"></div>
-            </div>
+            <div class="topic-chips" id="topicChips"></div>
           </div>
-        </section>
-      </section>
-
-      <section id="view-content" class="view hidden">
-        <section class="panel">
-          <div class="panel-head">
-            <div>
-              <h2>콘텐츠 작업판</h2>
-              <p>기획부터 발행까지 상태, 채널, CTA, 카피 초안을 함께 관리합니다.</p>
-            </div>
-            <div class="tabs" id="statusTabs"></div>
+          <div class="field">
+            <label for="mkExtra">꼭 넣을 소재 (선택)</label>
+            <textarea id="mkExtra">핵심 메시지: 세특 주제만 찾지 말고, 내 생기부가 어디서 막히는지 먼저 진단하세요.
+CTA: 무료 진단으로 현재 위치 확인</textarea>
           </div>
-          <div class="panel-body">
-            <div class="filters">
-              <input id="searchInput" placeholder="제목, 훅, 타깃, CTA 검색" oninput="renderContent()">
-              <select id="channelFilter" onchange="renderContent()"></select>
-              <select id="campaignFilter" onchange="renderContent()"></select>
-              <select id="sortFilter" onchange="renderContent()">
-                <option value="date">마감일순</option>
-                <option value="priority">우선순위순</option>
-                <option value="channel">채널순</option>
-              </select>
-            </div>
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>콘텐츠</th>
-                    <th>채널</th>
-                    <th>마감</th>
-                    <th>상태</th>
-                    <th>목표</th>
-                    <th>관리</th>
-                  </tr>
-                </thead>
-                <tbody id="contentRows"></tbody>
-              </table>
-            </div>
+
+          <div class="row-actions">
+            <button class="btn primary" id="genBtn" type="button" onclick="generateWithClaude()">✦ Claude로 생성하기</button>
+            <button class="btn" type="button" onclick="copyPromptOnly()">프롬프트만 복사</button>
           </div>
-        </section>
-      </section>
 
-      <section id="view-ai" class="view hidden">
-        <div class="layout">
-          <section class="panel">
-            <div class="panel-head">
-              <div>
-                <h2>Claude 콘텐츠 생성실</h2>
-                <p>주제, 카드뉴스, 릴스, 블로그, 검색광고 초안을 생성하고 콘텐츠로 저장합니다.</p>
-              </div>
-              <button class="btn coral" id="generateButton" type="button" onclick="generateWithClaude()">생성하기</button>
-            </div>
-            <div class="panel-body">
-              <div class="form-grid">
-                <div class="field">
-                  <label for="aiType">생성 유형</label>
-                  <select id="aiType">
-                    <option value="topic">마케팅 주제 10개</option>
-                    <option value="card">카드뉴스 구성</option>
-                    <option value="reel">릴스 대본</option>
-                    <option value="blog">블로그 초안</option>
-                    <option value="ad">검색광고 문구</option>
-                    <option value="cta">CTA 다듬기</option>
-                  </select>
-                </div>
-                <div class="field">
-                  <label for="aiChannel">채널</label>
-                  <select id="aiChannel"></select>
-                </div>
-                <div class="field">
-                  <label for="aiCampaign">캠페인</label>
-                  <select id="aiCampaign"></select>
-                </div>
-                <div class="field">
-                  <label for="aiTarget">타깃</label>
-                  <input id="aiTarget" value="고1·고2 학부모" placeholder="예: 고2 학부모">
-                </div>
-                <div class="field full">
-                  <label for="aiBrief">요청 내용</label>
-                  <textarea id="aiBrief">에바연은 희망학과 기준으로 생기부 빈틈을 진단하고, 탐구·독서·세특·수능최저/지원전략까지 한 흐름으로 연결하는 학생부 설계실입니다. 무료 진단을 첫 전환 목표로 두고, 학부모가 5초 안에 가치를 이해할 수 있게 작성해줘.</textarea>
-                </div>
-                <div class="field full">
-                  <label for="aiExtra">반드시 반영할 소재</label>
-                  <textarea id="aiExtra">핵심 메시지: 세특 주제만 찾지 말고, 내 생기부가 어디서 막히는지 먼저 진단하세요.
-CTA: 무료 진단으로 현재 위치 확인
-경쟁사 대비 차별점: 단순 자료 추천이 아니라 진단→실행→기록까지 연결</textarea>
-                </div>
-              </div>
-              <div class="hint" style="margin-top:12px">
-                <b>자동 초안 생산</b><br>
-                현재 선택한 캠페인·채널·타깃을 기준으로 광고기획 시트의 카피뱅크를 조합해 초안을 자동 저장합니다. 저장된 초안은 콘텐츠 작업판에서 열어 확인·수정할 수 있습니다.
-                <div class="form-grid" style="margin-top:10px">
-                  <div class="field">
-                    <label for="autoDraftCount">생산 개수</label>
-                    <input id="autoDraftCount" type="number" min="1" max="12" value="5">
-                  </div>
-                  <div class="field">
-                    <label for="autoDraftStatus">저장 상태</label>
-                    <select id="autoDraftStatus">
-                      <option value="검토">검토</option>
-                      <option value="기획">기획</option>
-                      <option value="제작">제작</option>
-                    </select>
-                  </div>
-                  <div class="field">
-                    <label for="autoDraftInterval">일정 간격</label>
-                    <input id="autoDraftInterval" type="number" min="1" max="14" value="2">
-                  </div>
-                  <div class="field">
-                    <label>실행</label>
-                    <button class="btn primary" type="button" onclick="autoProduceDrafts()">시트 기반 초안 자동 저장</button>
-                  </div>
-                </div>
-              </div>
-              <div style="height:12px"></div>
-              <div class="ai-result" id="aiResult">생성 결과가 여기에 표시됩니다.</div>
-              <div class="row-actions" style="margin-top:12px">
-                <button class="btn primary" type="button" onclick="saveAiAsContent()">생성 결과를 콘텐츠로 저장</button>
-                <button class="btn coral" type="button" onclick="generateAndSaveWithClaude()">Claude 생성 후 바로 검토 저장</button>
-                <button class="btn" type="button" onclick="copyAiResult()">결과 복사</button>
-                <button class="btn ghost" type="button" onclick="clearAiResult()">비우기</button>
-              </div>
-            </div>
-          </section>
+          <div style="height:14px"></div>
+          <div class="ai-result" id="aiResult">여기에 생성 결과가 나옵니다.</div>
+          <div class="row-actions" style="margin-top:12px">
+            <button class="btn dark" type="button" onclick="saveDraftToBoard()">이번 주 보드에 저장</button>
+            <button class="btn" type="button" onclick="copyAiResult()">결과 복사</button>
+            <button class="btn" type="button" onclick="clearAiResult()">비우기</button>
+          </div>
 
-          <aside class="panel">
-            <div class="panel-head">
-              <div>
-                <h2>Claude API 설정</h2>
-                <p>개인 API 키를 브라우저 저장소에 보관합니다.</p>
+          <details class="api">
+            <summary>⚙ Claude API 설정 (한 번만 입력하면 됩니다)</summary>
+            <div class="api-body">
+              <div class="hint" style="margin-bottom:12px">
+                API 키는 이 브라우저에만 저장되고 코드에는 들어가지 않습니다. 키가 없으면 위의 “프롬프트만 복사”로 claude.ai에 붙여 쓸 수도 있어요.
               </div>
-            </div>
-            <div class="panel-body">
-              <div class="hint">
-                GitHub Pages에 올려도 앱 코드는 공개될 수 있습니다. API 키는 코드에 넣지 말고 이 설정칸에만 입력하세요. 더 안전한 방식은 Cloudflare Worker 같은 중간 서버를 쓰는 것입니다.
+              <div class="field">
+                <label for="claudeKey">Anthropic API Key</label>
+                <input id="claudeKey" type="password" placeholder="sk-ant-api03-...">
               </div>
-              <div style="height:12px"></div>
-              <div class="form-grid">
-                <div class="field full">
-                  <label for="claudeKey">Anthropic API Key</label>
-                  <input id="claudeKey" type="password" placeholder="sk-ant-api03-...">
-                </div>
-                <div class="field full">
+              <div class="two">
+                <div class="field">
                   <label for="claudeModel">모델명</label>
-                  <input id="claudeModel" value="claude-sonnet-4-5" placeholder="예: claude-sonnet-4-5">
+                  <input id="claudeModel" value="claude-sonnet-4-5">
                 </div>
                 <div class="field">
                   <label for="claudeMaxTokens">최대 토큰</label>
                   <input id="claudeMaxTokens" type="number" min="500" max="8000" value="2200">
                 </div>
-                <div class="field">
-                  <label for="claudeTemperature">창의성</label>
-                  <input id="claudeTemperature" type="number" min="0" max="1" step="0.1" value="0.7">
-                </div>
-                <div class="field full">
-                  <button class="btn primary" type="button" onclick="saveClaudeSettings()">설정 저장</button>
-                  <button class="btn ghost" type="button" onclick="forgetClaudeKey()">API 키 삭제</button>
-                </div>
+              </div>
+              <div class="row-actions">
+                <button class="btn dark" type="button" onclick="saveClaudeSettings()">설정 저장</button>
+                <button class="btn" type="button" onclick="forgetClaudeKey()">키 삭제</button>
               </div>
             </div>
-          </aside>
+          </details>
         </div>
-      </section>
+      </div>
+    </section>
 
-      <section id="view-campaigns" class="view hidden">
-        <div class="layout">
-          <section class="panel">
-            <div class="panel-head">
-              <div>
-                <h2>캠페인 운영 현황</h2>
-                <p>무료 진단, Before-After, 6개월 전환 등 캠페인별 콘텐츠를 묶어 봅니다.</p>
-              </div>
-              <button class="btn primary" type="button" onclick="openCampaignEditor()">캠페인 추가</button>
-            </div>
-            <div class="panel-body">
-              <div class="campaign-list" id="campaignList"></div>
-            </div>
-          </section>
+    <!-- ========== 발행 기록 ========== -->
+    <section id="view-history" class="view hidden">
+      <div class="page-head">
+        <h1>발행 기록</h1>
+        <p>지금까지 발행한 주제와 날짜예요. 새 콘텐츠를 만들 때 과거와 겹치는지 여기서 확인하고, 중복은 자동으로 경고해 드립니다.</p>
+      </div>
+      <div class="goalbar" style="margin-bottom:14px">
+        <span class="goal-label">발행 기록</span>
+        <input class="goal" id="histSearch" placeholder="발행한 주제 검색 (예: 세특, 진단, 카드뉴스)" oninput="renderHistory()" style="font-size:15px;font-weight:700">
+        <div class="stat-mini" id="histStats"></div>
+      </div>
+      <div class="row-actions" style="margin-bottom:14px">
+        <button class="btn dark" type="button" onclick="copyHistoryTSV()">📋 엑셀로 복사 (‘발행완료’ 시트에 붙여넣기)</button>
+        <button class="btn" type="button" onclick="exportHistoryCsv()">⬇ 엑셀 파일(CSV)로 받기</button>
+      </div>
+      <div id="histList"></div>
+    </section>
 
-          <aside class="panel">
-            <div class="panel-head">
-              <div>
-                <h2>캠페인 입력</h2>
-                <p>목표와 오퍼를 바꾸면 콘텐츠 분류에 바로 반영됩니다.</p>
-              </div>
-            </div>
-            <div class="panel-body">
-              <form id="campaignForm" class="form-grid" onsubmit="saveCampaign(event)">
-                <input type="hidden" id="campaignId">
-                <div class="field full">
-                  <label for="campaignName">캠페인명</label>
-                  <input id="campaignName" required placeholder="예: 무료 진단 리드 확보">
-                </div>
-                <div class="field">
-                  <label for="campaignStart">시작일</label>
-                  <input id="campaignStart" type="date" required>
-                </div>
-                <div class="field">
-                  <label for="campaignEnd">종료일</label>
-                  <input id="campaignEnd" type="date" required>
-                </div>
-                <div class="field">
-                  <label for="campaignBudget">예산</label>
-                  <input id="campaignBudget" type="number" min="0" step="1000" placeholder="300000">
-                </div>
-                <div class="field">
-                  <label for="campaignStatus">상태</label>
-                  <select id="campaignStatus">
-                    <option value="진행">진행</option>
-                    <option value="준비">준비</option>
-                    <option value="완료">완료</option>
-                  </select>
-                </div>
-                <div class="field full">
-                  <label for="campaignObjective">목표</label>
-                  <textarea id="campaignObjective" placeholder="예: 무료 진단 완료 50건 확보"></textarea>
-                </div>
-                <div class="field full">
-                  <label for="campaignOffer">오퍼 / CTA</label>
-                  <textarea id="campaignOffer" placeholder="예: 무료 진단으로 현재 위치 확인"></textarea>
-                </div>
-                <div class="field full">
-                  <button class="btn primary" type="submit">캠페인 저장</button>
-                  <button class="btn ghost" type="button" onclick="clearCampaignForm()">비우기</button>
-                </div>
-              </form>
-            </div>
-          </aside>
+    <!-- ========== 자료실 ========== -->
+    <section id="view-library" class="view hidden">
+      <div class="page-head">
+        <h1>자료실</h1>
+        <p>콘텐츠 만들 때 흔들리지 않게 — 핵심 메시지, 채널 운영 팁, 바로 쓰는 카피, 경쟁사 메모.</p>
+      </div>
+
+      <div class="quote" id="libQuote"></div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>채널별 운영 팁</h2><p>4개 채널을 어떤 목적·주기로 운영하면 좋은지 한눈에.</p></div>
+        <div class="panel-body" id="libChannels"></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>바로 쓰는 카피뱅크</h2><p>복사 버튼을 눌러 콘텐츠 만들기 소재로 붙여 넣으세요.</p></div>
+        <div class="panel-body"><div class="lib-grid" id="libCopy"></div></div>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head"><h2>경쟁사 한 줄 메모</h2><p>그들이 잘하는 것 vs 에바연이 강조할 것.</p></div>
+        <div class="panel-body" id="libCompetitors"></div>
+      </div>
+    </section>
+  </main>
+
+  <!-- 카드 편집 다이얼로그 -->
+  <dialog id="editDialog">
+    <form id="editForm" onsubmit="saveCard(event)">
+      <div class="panel-head">
+        <h2 id="editTitle">콘텐츠</h2>
+        <button class="btn sm" type="button" onclick="closeEdit()">닫기</button>
+      </div>
+      <div class="panel-body">
+        <input type="hidden" id="ed_id">
+        <div class="field">
+          <label for="ed_title">제목</label>
+          <input id="ed_title" required placeholder="콘텐츠 제목">
         </div>
-      </section>
-
-      <section id="view-references" class="view hidden">
-        <section class="panel">
-          <div class="panel-head">
-            <div>
-              <h2>광고기획 시트 핵심 보드</h2>
-              <p>브랜드 메시지, 포지셔닝, 카피뱅크, 실행전략을 한 화면에서 확인합니다.</p>
-            </div>
+        <div class="two">
+          <div class="field">
+            <label for="ed_channel">채널</label>
+            <select id="ed_channel" onchange="syncEditTypes()"></select>
           </div>
-          <div class="panel-body">
-            <div class="reference-grid" id="brandBoard"></div>
-          </div>
-        </section>
-
-        <div class="layout">
-          <section class="panel">
-            <div class="panel-head">
-              <div>
-                <h2>타깃·USP·채널 운영계획</h2>
-                <p>광고기획 시트의 표 내용을 앱 안에서 바로 확인합니다.</p>
-              </div>
-            </div>
-            <div class="panel-body">
-              <div class="reference-stack">
-                <div>
-                  <h3 style="margin:0 0 8px;color:var(--navy);font-size:14px">타깃 고객 & 페인포인트</h3>
-                  <div class="reference-table" id="targetTable"></div>
-                </div>
-                <div>
-                  <h3 style="margin:0 0 8px;color:var(--navy);font-size:14px">차별점 USP</h3>
-                  <div class="reference-table" id="uspTable"></div>
-                </div>
-                <div>
-                  <h3 style="margin:0 0 8px;color:var(--navy);font-size:14px">채널별 광고 운영 계획</h3>
-                  <div class="reference-table" id="channelPlanTable"></div>
-                </div>
-              </div>
-            </div>
-          </section>
-          <aside class="panel">
-            <div class="panel-head">
-              <div>
-                <h2>카피·프로모션·전략</h2>
-                <p>Claude 생성 전에도 이 기준을 유지합니다.</p>
-              </div>
-            </div>
-            <div class="panel-body">
-              <div class="reference-stack" id="messagePrinciples"></div>
-            </div>
-          </aside>
-        </div>
-
-        <div class="layout">
-          <section class="panel">
-            <div class="panel-head">
-              <div>
-                <h2>경쟁사 참고 메모</h2>
-                <p>경쟁 구도를 광고 메시지 기준으로 요약했습니다.</p>
-              </div>
-            </div>
-            <div class="panel-body">
-              <div class="competitor-list" id="competitorList"></div>
-            </div>
-          </section>
-          <aside class="panel">
-            <div class="panel-head">
-              <div>
-                <h2>추천 광고 전략</h2>
-                <p>실행 단계별로 바로 콘텐츠를 만들 수 있는 메모입니다.</p>
-              </div>
-            </div>
-            <div class="panel-body">
-              <div class="reference-stack" id="strategySteps"></div>
-            </div>
-          </aside>
-        </div>
-      </section>
-    </main>
-  </div>
-
-  <dialog id="editorDialog">
-    <form id="contentForm" onsubmit="saveContent(event)">
-      <div class="panel" style="box-shadow:none;border:0">
-        <div class="panel-head">
-          <div>
-            <h2 id="editorTitle">콘텐츠 등록</h2>
-            <p>일정, 채널, 카피 초안, CTA를 함께 저장합니다.</p>
-          </div>
-          <button class="btn ghost" type="button" onclick="closeEditor()">닫기</button>
-        </div>
-        <div class="panel-body">
-          <input type="hidden" id="itemId">
-          <div class="form-grid">
-            <div class="field full">
-              <label for="itemTitle">제목</label>
-              <input id="itemTitle" required placeholder="예: 세특 주제만 찾다 끝나는 학생을 위한 카드뉴스">
-            </div>
-            <div class="field">
-              <label for="itemChannel">채널</label>
-              <select id="itemChannel"></select>
-            </div>
-            <div class="field">
-              <label for="itemFormat">형식</label>
-              <select id="itemFormat"></select>
-            </div>
-            <div class="field">
-              <label for="itemDue">발행 / 마감일</label>
-              <input id="itemDue" type="date" required>
-            </div>
-            <div class="field">
-              <label for="itemStatus">상태</label>
-              <select id="itemStatus"></select>
-            </div>
-            <div class="field">
-              <label for="itemCampaign">캠페인</label>
-              <select id="itemCampaign"></select>
-            </div>
-            <div class="field">
-              <label for="itemPriority">우선순위</label>
-              <select id="itemPriority">
-                <option value="높음">높음</option>
-                <option value="중간">중간</option>
-                <option value="낮음">낮음</option>
-              </select>
-            </div>
-            <div class="field">
-              <label for="itemTarget">타깃</label>
-              <input id="itemTarget" placeholder="예: 고2 학부모">
-            </div>
-            <div class="field">
-              <label for="itemGoal">목표</label>
-              <input id="itemGoal" placeholder="예: 무료 진단 클릭">
-            </div>
-            <div class="field full">
-              <label for="itemHook">첫 문장 / 훅</label>
-              <textarea id="itemHook" placeholder="예: 세특 주제를 많이 모아도 생기부가 달라지지 않는 이유"></textarea>
-            </div>
-            <div class="field full">
-              <label for="itemBody">콘텐츠 구성</label>
-              <textarea id="itemBody" placeholder="1장 문제 제기, 2장 Before, 3장 After, 4장 무료 진단 CTA"></textarea>
-            </div>
-            <div class="field">
-              <label for="itemCta">CTA</label>
-              <input id="itemCta" placeholder="무료 진단으로 시작">
-            </div>
-            <div class="field">
-              <label for="itemBudget">예산 / 비용</label>
-              <input id="itemBudget" type="number" min="0" step="1000" placeholder="0">
-            </div>
-            <div class="field full">
-              <label for="itemNotes">메모</label>
-              <textarea id="itemNotes" placeholder="디자인 요청, 참고 링크, 결과 메모 등을 적어두세요."></textarea>
-            </div>
+          <div class="field">
+            <label for="ed_type">형식</label>
+            <select id="ed_type"></select>
           </div>
         </div>
-        <div class="panel-head" style="border-top:1px solid var(--line);border-bottom:0">
-          <button class="btn danger" type="button" id="deleteItemButton" onclick="deleteCurrentItem()">삭제</button>
+        <div class="two">
+          <div class="field">
+            <label for="ed_due">올릴 날짜</label>
+            <input id="ed_due" type="date">
+          </div>
+          <div class="field">
+            <label for="ed_status">상태</label>
+            <select id="ed_status">
+              <option value="할일">할일</option>
+              <option value="초안">초안 완성</option>
+              <option value="발행">발행 완료</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="ed_hook">첫 문장 / 훅</label>
+          <textarea id="ed_hook" placeholder="시선을 끄는 첫 문장"></textarea>
+        </div>
+        <div class="field">
+          <label for="ed_body">본문 / 구성</label>
+          <textarea id="ed_body" style="min-height:120px" placeholder="콘텐츠 내용"></textarea>
+        </div>
+        <div class="field">
+          <label for="ed_cta">CTA</label>
+          <input id="ed_cta" placeholder="무료 진단으로 시작">
+        </div>
+        <div class="row-actions" style="justify-content:space-between">
+          <button class="btn sm" type="button" style="color:#a83e23;border-color:#e8b5a8" onclick="deleteCard()">삭제</button>
           <div class="row-actions">
-            <button class="btn ghost" type="button" onclick="closeEditor()">취소</button>
+            <button class="btn" type="button" onclick="copyCardText()">전체 복사</button>
             <button class="btn primary" type="submit">저장</button>
           </div>
         </div>
@@ -870,895 +489,794 @@ CTA: 무료 진단으로 현재 위치 확인
     </form>
   </dialog>
 
+  <!-- 더보기 메뉴 -->
+  <dialog id="menuDialog">
+    <div class="panel-head"><h2>더보기</h2><button class="btn sm" type="button" onclick="document.getElementById('menuDialog').close()">닫기</button></div>
+    <div class="panel-body" style="display:grid;gap:8px">
+      <button class="btn" type="button" onclick="exportWordPack()">📄 주간 실행팩 Word로 받기</button>
+      <button class="btn" type="button" onclick="exportJson()">💾 전체 백업 (JSON)</button>
+      <label class="btn" for="importFile">📂 백업 불러오기</label>
+      <input id="importFile" class="hidden" type="file" accept="application/json,.json" onchange="importJson(this.files[0]); this.value=''">
+      <button class="btn" type="button" style="color:#a83e23;border-color:#e8b5a8" onclick="resetAll()">↺ 처음 예시로 되돌리기</button>
+    </div>
+  </dialog>
+
   <div class="toast" id="toast"></div>
 
   <script>
-    const STORAGE_KEY = "eva_marketing_manager_v3";
+    const STORE = "eva_marketing_simple_v1";
     const CLAUDE_KEY = "eva_marketing_claude_settings_v1";
-    const channels = ["네이버 검색광고", "인스타그램", "유튜브/쇼츠", "카드뉴스", "블로그 SEO", "카카오/문자", "리타겟팅", "상담자료"];
-    const formats = ["검색광고", "릴스", "쇼츠", "카드뉴스", "블로그 글", "문자", "상세페이지", "상담 스크립트", "무료자료"];
-    const statuses = ["기획", "제작", "검토", "발행", "완료"];
-    const statusClass = { "기획": "plan", "제작": "make", "검토": "ready", "발행": "live", "완료": "done" };
-    const priorityClass = { "높음": "high", "중간": "mid", "낮음": "low" };
-    const today = new Date();
-    const pad = value => String(value).padStart(2, "0");
-    const iso = date => `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
-    const addDays = days => {
-      const date = new Date(today);
-      date.setDate(date.getDate() + days);
-      return iso(date);
-    };
 
-    const seedState = {
-      brandGuide: {
-        name: "에듀케레 바른교육연구소 (에바연)",
-        slogan: "탐구가 곧 실력이 되는 곳, 에바연",
-        oneLine: "학생부 설계부터 탐구자료 제작까지, 학생 한 명을 위한 맞춤 연구소",
-        strengths: "현장 전문가의 설계 + 교육부 기재요령 준수 + 계열별 맞춤 탐구자료",
-        hashtags: "#학생부 #세특 #생기부 #탐구보고서 #탐구주제 #학종 #수시",
-        positioning: "세특 주제 판매가 아니라 진단 → 추천 탐구자료 → 탐구 설계 → 주간 플래너로 이어지는 학생부 설계실",
-        coreMessage: "세특 주제만 찾지 말고, 내 생기부가 어디서 막히는지 먼저 진단하세요.",
-        openingLine: "세특 주제 찾기 전에, 내 생기부가 어디서 막혔는지 먼저 보세요."
+    const CHANNELS = [
+      { id: "블로그", emoji: "✍️", color: "var(--c-blog)", desc: "검색 유입·신뢰" },
+      { id: "인스타그램", emoji: "📷", color: "var(--c-insta)", desc: "도달·저장" },
+      { id: "카카오채널", emoji: "💬", color: "var(--c-kakao)", desc: "리드·상담" },
+      { id: "유튜브", emoji: "▶️", color: "var(--c-youtube)", desc: "탐구 노하우" }
+    ];
+    const TYPES = {
+      "블로그": ["블로그 글", "짧은 정보글"],
+      "인스타그램": ["카드뉴스", "릴스 대본", "피드 글"],
+      "카카오채널": ["채널 메시지", "무료자료 안내"],
+      "유튜브": ["쇼츠 대본", "롱폼 개요"]
+    };
+    const STATUSES = ["할일", "초안", "발행"];
+
+    // 주제 추천 풀 (ch: 잘 맞는 채널 / mo: 잘 맞는 달)
+    const TOPIC_BANK = [
+      { t: "세특 주제만 찾다 끝나는 학생, 무료 진단부터 해야 하는 이유" },
+      { t: "합격생 생기부를 그대로 따라 하면 위험한 이유", ch: ["블로그","인스타그램"] },
+      { t: "고2 생기부, 지금 봐야 할 3가지 빈틈", ch: ["블로그"] },
+      { t: "활동은 많은데 생기부는 한 줄? 연결성이 빠진 경우", ch: ["인스타그램"] },
+      { t: "AI가 추천한 세특 주제, 내 생기부엔 안 맞을 수 있다" },
+      { t: "내신보다 먼저 봐야 할 건 생기부의 '다음 한 줄'" },
+      { t: "계열별 탐구주제 예시 — 공학·의약·사회·인문", ch: ["블로그"] },
+      { t: "선택과목과 희망학과가 안 맞을 때 점검하는 법", ch: ["블로그"] },
+      { t: "세특에 쓰면 안 되는 표현 vs 안전한 표현", ch: ["블로그"] },
+      { t: "독서활동을 전공과 연결하는 3단계", ch: ["블로그","유튜브"] },
+      { t: "같은 활동, 세특 문장은 이렇게 달라진다", ch: ["인스타그램"] },
+      { t: "세특 주제, 계열만 골라도 끝", ch: ["인스타그램"] },
+      { t: "생기부, 부모가 체크할 수 있는 5가지", ch: ["인스타그램"] },
+      { t: "탐구 Before / After 한 장 비교", ch: ["인스타그램"] },
+      { t: "무료 탐구주제 리스트 10선 받아가기", ch: ["카카오채널"] },
+      { t: "1:1 생기부 무료 진단 신청 안내", ch: ["카카오채널"] },
+      { t: "이번 주 무료 자료 — 계열별 탐구 가이드", ch: ["카카오채널"] },
+      { t: "탐구보고서, 방법·결과에서 끝내면 안 되는 이유", ch: ["유튜브"] },
+      { t: "실제로 먹힌 세특은 뭐가 다를까", ch: ["유튜브"] },
+      { t: "생기부 빈틈 5초로 진단하는 법", ch: ["유튜브","인스타그램"] },
+      { t: "탐구 주제 잡는 법, 3단계로 정리", ch: ["유튜브"] },
+      { t: "여름방학, 생기부 빈틈 메우기 딱 좋은 시기", mo: [6,7,8] },
+      { t: "기말 끝나고 바로 해야 할 세특 정리", mo: [6,7,12] },
+      { t: "신학기 전, 생기부 설계 미리 잡아두기", mo: [2,3,8,9] }
+    ];
+    let topicCursor = 0;
+    let topicsShown = false;
+    const statusClass = { "할일": "todo", "초안": "draft", "발행": "live" };
+    const statusLabel = { "할일": "할일", "초안": "초안", "발행": "발행" };
+
+    const today = new Date();
+    const pad = v => String(v).padStart(2, "0");
+    const iso = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+    const addDays = n => { const d = new Date(today); d.setDate(d.getDate()+n); return iso(d); };
+    const uid = () => `it-${Date.now()}-${Math.floor(Math.random()*1000)}`;
+
+    const seed = {
+      weekGoal: "무료 진단 신청 10건 만들기",
+      brand: {
+        opening: "세특 주제 찾기 전에, 내 생기부가 어디서 막혔는지 먼저 보세요.",
+        core: "세특 주제만 찾지 말고, 내 생기부가 어디서 막히는지 먼저 진단하세요.",
+        positioning: "주제 추천에서 끝나지 않고 진단 → 추천 탐구자료 → 탐구 설계 → 주간 플래너로 이어지는 학생부 설계실",
+        hashtags: "#학생부 #세특 #생기부 #탐구주제 #학종 #수시"
       },
-      targets: [
-        { group: "고등 학생 (학종 준비)", need: "과목별 세특·탐구 주제를 혼자 잡기 어려움", pain: "뭐부터 시작할지 모름, 주제가 매번 겹침", solution: "계열·전공 맞춤 탐구 주제 + 보고서 설계 가이드 제공" },
-        { group: "학부모", need: "아이 생기부를 체계적으로 관리해 주길 원함", pain: "고가 컨설팅은 부담, 정보 출처 신뢰 어려움", solution: "합리적 비용·검증된 자료, 투명한 설계 프로세스" },
-        { group: "지방/일반고 학생", need: "주변에 생기부 관리 도와줄 곳이 없음", pain: "세특 작성·창체 방향 자체를 몰라 막막함", solution: "온라인 기반 비대면 설계·자료로 지역 격차 해소" },
-        { group: "메디컬·상위권 지망생", need: "전공적합성 높은 심화 탐구가 필요", pain: "수준 높은 주제 선정·심화가 어려움", solution: "메디컬/상위권 맞춤 심화 탐구 설계" }
-      ],
-      usps: [
-        { point: "맞춤 설계", description: "AI 자동 추천이 아닌 학생 개인에 맞춘 1:1 설계", advantage: "세특노트·리로스쿨보다 맞춤도 높음" },
-        { point: "가격 경쟁력", description: "대치동 고가 컨설팅 대비 합리적 가격", advantage: "데오럭스·아폴론 등 고가 컨설팅 대비 진입장벽 낮음" },
-        { point: "자료 퀄리티", description: "현장 전문가 제작 + 교육부 기재요령 준수", advantage: "단순 파일 마켓 대비 신뢰도 높음" },
-        { point: "사후 관리", description: "탐구→세특→면접까지 연결되는 스토리라인", advantage: "일회성 자료 구매 대비 지속 관리" }
-      ],
-      channelPlans: [
-        { channel: "인스타그램", purpose: "브랜드 인지·학부모 도달", format: "카드뉴스, 후기 릴스", message: "세특 주제, 이제 고민 하지 마세요", cadence: "주 3회" },
-        { channel: "네이버 블로그", purpose: "검색 유입·신뢰 확보", format: "계열별 탐구주제 예시, 설계 사례", message: "전문성·정보량으로 신뢰 구축", cadence: "주 2회" },
-        { channel: "유튜브/쇼츠", purpose: "탐구 노하우 공유", format: "탐구보고서 작성법, 합격 사례 인터뷰", message: "실제로 먹힌 세특은 이렇게 다르다", cadence: "주 1회" },
-        { channel: "카카오/단톡방", purpose: "잠재고객 확보·상담 전환", format: "무료 자료 제공, 1:1 상담 안내", message: "무료 탐구주제 리스트 받아가세요", cadence: "상시" },
-        { channel: "검색광고(네이버/구글)", purpose: "구매 전환", format: "키워드 광고", message: "고관여·구매의도 키워드 집중 집행", cadence: "시즌 집중" }
+      channelTips: [
+        { channel: "블로그", purpose: "검색 유입·신뢰 확보", format: "계열별 탐구주제 예시, 설계 사례, 정보글", message: "전문성·정보량으로 신뢰 구축", cadence: "주 2회" },
+        { channel: "인스타그램", purpose: "브랜드 인지·학부모 도달", format: "카드뉴스, 후기·Before/After 릴스", message: "세특 주제, 이제 고민 마세요", cadence: "주 3회" },
+        { channel: "카카오채널", purpose: "잠재고객 확보·상담 전환", format: "무료 자료 제공, 1:1 상담 안내", message: "무료 탐구주제 리스트 받아가세요", cadence: "상시" },
+        { channel: "유튜브", purpose: "탐구 노하우 공유", format: "탐구보고서 작성법 쇼츠, 합격 사례", message: "실제로 먹힌 세특은 이렇게 다릅니다", cadence: "주 1회" }
       ],
       copyBank: [
+        { type: "진단 포지셔닝", headline: "세특 주제만 찾고 끝내지 마세요. 내 생기부의 빈틈부터 진단하세요.", body: "주제 추천 다음에 무엇을 기록할지까지 이어지는 학생부 설계실.", cta: "무료 진단 시작" },
         { type: "학생 타깃", headline: "세특 주제, 계열만 골라도 끝", body: "계열·과목별 탐구 주제와 설계 가이드를 한 번에. 혼자 고민하던 시간을 줄이세요.", cta: "무료 주제 리스트 받기" },
         { type: "학부모 타깃", headline: "아이 생기부, 이제 전문가와 함께", body: "고가 컨설팅 없이도 검증된 자료로 체계적 관리. 투명한 과정과 합리적 비용.", cta: "1:1 무료 상담 신청" },
         { type: "신뢰/권위", headline: "교육부 기재요령, 그대로 지키는 자료", body: "금칙어·규정을 준수한 안전한 탐구 설계. 현장 전문가가 직접 제작합니다.", cta: "샘플 자료 보기" },
-        { type: "지방/비대면", headline: "지역 상관없이, 대치동 수준의 설계", body: "온라인으로 어디서든 동일한 퀄리티. 지역 격차 없는 생기부 관리.", cta: "온라인 설명회 예약" },
-        { type: "진단 포지셔닝", headline: "세특 주제만 찾고 끝내지 마세요. 내 생기부의 빈틈부터 진단하세요.", body: "주제 추천 다음에 무엇을 기록할지까지 이어지는 학생부 설계실.", cta: "무료 진단 시작" },
         { type: "진단 포지셔닝", headline: "남의 합격 생기부보다 중요한 건, 내 기록의 다음 한 줄입니다.", body: "합격생 사례를 따라 하기보다 내 기록의 빈틈을 먼저 확인하세요.", cta: "내 기록 진단하기" },
-        { type: "진단 포지셔닝", headline: "AI가 주제를 추천해도, 내 생기부에 맞는지는 따로 봐야 합니다.", body: "희망학과 기준으로 강점과 보완 지점을 진단하고 실행으로 연결합니다.", cta: "무료 진단으로 확인" },
-        { type: "진단 포지셔닝", headline: "5분 무료 진단으로 전공적성·생기부·내신 위치를 먼저 확인하세요.", body: "현재 위치를 알아야 탐구와 세특 방향이 선명해집니다.", cta: "5분 진단 시작" },
-        { type: "진단 포지셔닝", headline: "탐구자료를 고르고, 질문을 만들고, 이번 주 플래너까지 이어지는 학생부 설계실.", body: "자료 구매에서 끝나지 않고 실행과 기록까지 관리합니다.", cta: "설계실 둘러보기" }
-      ],
-      promotions: [
-        { name: "무료 탐구주제 팩", detail: "계열별 탐구주제 10선 무료 배포로 이메일/카카오 수집", timing: "인스타그램·카카오, 상시" },
-        { name: "신학기 얼리버드", detail: "학기 초 생기부 설계 조기신청 시 할인", timing: "3월·9월 시즌 집중" },
-        { name: "후기 이벤트", detail: "수강 후기 작성 시 추가 자료 증정", timing: "전 채널, 상시" },
-        { name: "친구 추천", detail: "친구 추천 시 양쪽 포인트/할인 제공", timing: "카카오·인스타그램" }
-      ],
-      strategySteps: [
-        { step: "검색광고", detail: "네이버/구글 검색광고. 랜딩은 자료 판매 페이지가 아니라 무료 진단으로 연결", keywords: "세특 주제 추천, 생기부 컨설팅, 탐구보고서 주제, 고2 생기부, 학종 생기부, 수능최저 계산" },
-        { step: "콘텐츠", detail: "카드뉴스/블로그형 콘텐츠로 문제 제기 후 진단으로 유도", keywords: "세특 주제 추천 사이트를 써도 생기부가 약해지는 이유 / 합격생 생기부를 따라 하면 위험한 이유 / 고2 생기부, 지금 봐야 할 3가지 빈틈" },
-        { step: "리타겟팅", detail: "무료 진단 완료자 대상 재노출 후 구독 전환 유도", keywords: "진단 결과만 보고 끝내지 마세요. 이번 주 탐구로 이어가야 기록이 됩니다." }
-      ],
-      campaigns: [
-        { id: "camp-free-diagnosis", name: "무료 진단 리드 확보", start: addDays(0), end: addDays(30), budget: 300000, status: "진행", objective: "무료 진단 완료 50건과 상담 문의 10건 확보", offer: "세특 주제 찾기 전에 내 생기부 빈틈을 무료 진단" },
-        { id: "camp-topic-pack", name: "무료 탐구주제 팩 수집", start: addDays(2), end: addDays(28), budget: 120000, status: "준비", objective: "계열별 탐구주제 10선으로 이메일·카카오 리드 수집", offer: "무료 탐구주제 리스트 받아가기" },
-        { id: "camp-trust-content", name: "전문성·신뢰 구축 콘텐츠", start: addDays(4), end: addDays(35), budget: 80000, status: "준비", objective: "교육부 기재요령 준수와 현장 전문가 설계를 반복 노출", offer: "샘플 자료 보기" },
-        { id: "camp-before-after", name: "세특 Before-After 인지도", start: addDays(3), end: addDays(24), budget: 150000, status: "준비", objective: "학부모가 에바연의 차별점을 5초 안에 이해하도록 소재 반복", offer: "같은 활동도 세특 문장은 달라집니다" },
-        { id: "camp-retargeting", name: "진단 완료자 리타겟팅", start: addDays(10), end: addDays(45), budget: 200000, status: "준비", objective: "무료 진단 이후 6개월 이용권 전환", offer: "이번 주 탐구로 이어가야 기록이 됩니다" },
-        { id: "camp-earlybird", name: "신학기 얼리버드", start: addDays(20), end: addDays(60), budget: 100000, status: "준비", objective: "3월·9월 시즌에 생기부 설계 조기 신청 유도", offer: "학기 초 생기부 설계 조기신청 혜택" }
-      ],
-      items: [
-        { id: "item-1", title: "세특 주제 찾기 전 무료 진단 검색광고", channel: "네이버 검색광고", format: "검색광고", dueDate: addDays(1), status: "검토", campaignId: "camp-free-diagnosis", priority: "높음", target: "고1·고2 학부모", goal: "무료 진단 클릭", hook: "세특 주제 찾기 전에, 내 생기부가 어디서 막혔는지 먼저 보세요.", body: "희망학과 기준으로 생기부 빈틈을 진단하고 탐구·독서·세특 방향을 연결합니다.", cta: "무료 진단 시작", budget: 50000, notes: "키워드: 세특 주제 추천, 생기부 컨설팅, 탐구보고서 주제, 고2 생기부" },
-        { id: "item-2", title: "세특 주제, 계열만 골라도 끝 카드뉴스", channel: "인스타그램", format: "카드뉴스", dueDate: addDays(3), status: "제작", campaignId: "camp-topic-pack", priority: "높음", target: "고등 학생", goal: "무료 주제 리스트 신청", hook: "세특 주제, 계열만 골라도 끝", body: "계열·과목별 탐구 주제와 설계 가이드를 한 번에 보여주는 카드뉴스. 마지막 장은 무료 탐구주제 팩 신청 CTA.", cta: "무료 주제 리스트 받기", budget: 20000, notes: "광고기획 시트 5번 카피뱅크 학생 타깃 반영" },
-        { id: "item-3", title: "교육부 기재요령 준수 신뢰 카드", channel: "카드뉴스", format: "카드뉴스", dueDate: addDays(5), status: "기획", campaignId: "camp-trust-content", priority: "중간", target: "학부모", goal: "샘플 자료 열람", hook: "교육부 기재요령, 그대로 지키는 자료", body: "금칙어·규정을 준수한 안전한 탐구 설계와 현장 전문가 제작 과정을 설명합니다.", cta: "샘플 자료 보기", budget: 0, notes: "신뢰/권위 카피 활용" },
-        { id: "item-4", title: "같은 활동도 세특 문장은 달라집니다 카드뉴스", channel: "인스타그램", format: "카드뉴스", dueDate: addDays(7), status: "제작", campaignId: "camp-before-after", priority: "높음", target: "학부모", goal: "저장·공유", hook: "열심히 했는데 생기부엔 한 줄?", body: "1장 문제 제기, 2장 활동 Before, 3장 전공 연결 After, 4장 무료 진단 CTA", cta: "내 아이 생기부 빈틈 확인", budget: 0, notes: "Before/After 문장으로 5초 이해 유도" },
-        { id: "item-5", title: "고2 생기부 지금 봐야 할 3가지 빈틈 블로그", channel: "블로그 SEO", format: "블로그 글", dueDate: addDays(9), status: "기획", campaignId: "camp-free-diagnosis", priority: "중간", target: "검색 유입 학부모", goal: "진단 페이지 유입", hook: "고2 생기부는 활동 수보다 연결성이 먼저입니다", body: "선택과목, 탐구 주제, 독서 기록이 희망학과 기준으로 이어지는지 점검하는 글", cta: "무료 진단으로 현재 위치 확인", budget: 0, notes: "제목 예시: 고2 생기부, 지금 봐야 할 3가지 빈틈" },
-        { id: "item-6", title: "탐구보고서 작성법 쇼츠", channel: "유튜브/쇼츠", format: "쇼츠", dueDate: addDays(11), status: "기획", campaignId: "camp-trust-content", priority: "중간", target: "고등 학생", goal: "브랜드 인지", hook: "실제로 먹힌 세특은 이렇게 다릅니다", body: "탐구보고서가 방법·결과에서 끝나지 않고 한계·후속 질문까지 이어져야 한다는 45초 쇼츠.", cta: "샘플 탐구 설계 보기", budget: 0, notes: "광고기획 시트 유튜브/쇼츠 주 1회 운영" },
-        { id: "item-7", title: "무료 탐구주제 리스트 카카오 안내", channel: "카카오/문자", format: "문자", dueDate: addDays(12), status: "검토", campaignId: "camp-topic-pack", priority: "높음", target: "카카오 채널 친구", goal: "리드 수집", hook: "무료 탐구주제 리스트 받아가세요", body: "계열별 탐구주제 10선 무료 배포와 1:1 상담 안내를 짧게 연결합니다.", cta: "무료 자료 받기", budget: 0, notes: "카카오/단톡방 상시 운영" },
-        { id: "item-8", title: "합격생 생기부 따라 하면 위험한 이유 블로그", channel: "블로그 SEO", format: "블로그 글", dueDate: addDays(15), status: "기획", campaignId: "camp-free-diagnosis", priority: "중간", target: "학부모", goal: "진단 페이지 유입", hook: "남의 합격 생기부보다 중요한 건, 내 기록의 다음 한 줄입니다.", body: "합격생 DB 참고의 한계와 내 기록 진단의 필요성을 비교합니다.", cta: "내 기록 진단하기", budget: 0, notes: "경쟁사: 그들의 생기부, 진학사 대비 메시지" },
-        { id: "item-9", title: "진단 완료자 리타겟팅 광고", channel: "리타겟팅", format: "검색광고", dueDate: addDays(18), status: "기획", campaignId: "camp-retargeting", priority: "높음", target: "무료 진단 완료자", goal: "6개월 이용권 전환", hook: "진단 결과만 보고 끝내지 마세요.", body: "이번 주 탐구로 이어가야 기록이 됩니다. 추천 자료와 플래너로 바로 시작하세요.", cta: "이번 주 탐구 시작", budget: 60000, notes: "광고기획 시트 11번 리타겟팅 문구 반영" },
-        { id: "item-10", title: "지역 상관없는 온라인 설계 상세페이지", channel: "상담자료", format: "상세페이지", dueDate: addDays(21), status: "기획", campaignId: "camp-earlybird", priority: "낮음", target: "지방/일반고 학생·학부모", goal: "온라인 설명회 예약", hook: "지역 상관없이, 대치동 수준의 설계", body: "온라인 기반 비대면 설계와 자료 제공으로 지역 격차를 줄인다는 점을 설명합니다.", cta: "온라인 설명회 예약", budget: 0, notes: "지방/비대면 카피 활용" }
+        { type: "지방/비대면", headline: "지역 상관없이, 대치동 수준의 설계", body: "온라인으로 어디서든 동일한 퀄리티. 지역 격차 없는 생기부 관리.", cta: "온라인 설명회 예약" }
       ],
       competitors: [
-        { name: "AI/자료 플랫폼", focus: "리로스쿨, 세특노트, AMCU. 주제 탐색이 빠르고 가격/구독 구조가 명확", implication: "주제 추천 다음 무엇을 기록할지까지 에바연이 해결" },
-        { name: "합격생 DB", focus: "그들의 생기부, 진학사. 실제 합격 사례와 데이터 신뢰", implication: "남의 생기부 열람보다 내 기록의 빈틈 진단 강조" },
-        { name: "맞춤 보고서/컨설팅", focus: "학종Q, 수시레시피, 데오럭스, 메타인, 아폴론. 전문가, 1:1, 프리미엄 신뢰", implication: "상담 1회보다 한 학기 실행 관리 강조" },
-        { name: "공공/교사 자료", focus: "교육부 포털, 티처빌. 규정·기재 기준 신뢰", implication: "규정 안에서 쓸 수 있는 학생용 실행 설계 강조" },
-        { name: "자료 마켓", focus: "해피캠퍼스. 저가·자료량", implication: "다운로드 자료가 아니라 진단과 플래너까지 이어짐 강조" }
+        { name: "AI·자료 플랫폼", focus: "리로스쿨·세특노트. 주제 탐색 빠르고 가격 명확", reply: "주제 추천 다음 '무엇을 기록할지'까지 연결" },
+        { name: "합격생 DB", focus: "그들의 생기부·진학사. 실제 합격 데이터 신뢰", reply: "남의 생기부보다 '내 기록의 빈틈' 진단 강조" },
+        { name: "맞춤 컨설팅", focus: "데오럭스·아폴론. 1:1 프리미엄 신뢰", reply: "상담 1회보다 '한 학기 실행 관리' 강조" },
+        { name: "자료 마켓", focus: "해피캠퍼스. 저가·자료량", reply: "다운로드가 아니라 '진단·플래너까지' 강조" }
+      ],
+      items: [
+        { id: "it-s1", title: "세특 주제 찾기 전, 무료 진단부터 하라는 블로그 글", channel: "블로그", type: "블로그 글", due: addDays(1), status: "초안", hook: "고2 생기부는 활동 수보다 '연결성'이 먼저입니다.", body: "선택과목·탐구·독서가 희망학과 기준으로 이어지는지 점검하는 글. 마지막에 무료 진단 CTA.", cta: "무료 진단으로 현재 위치 확인" },
+        { id: "it-s2", title: "세특 주제, 계열만 골라도 끝 — 카드뉴스", channel: "인스타그램", type: "카드뉴스", due: addDays(2), status: "할일", hook: "세특 주제, 계열만 골라도 끝", body: "1장 훅 / 2장 문제 / 3장 비교 / 4장 해결 / 5장 무료 진단 CTA", cta: "무료 주제 리스트 받기" },
+        { id: "it-s3", title: "무료 탐구주제 리스트 카카오 안내", channel: "카카오채널", type: "채널 메시지", due: addDays(2), status: "할일", hook: "무료 탐구주제 리스트 받아가세요", body: "계열별 탐구주제 10선 무료 배포 + 1:1 상담 안내를 짧게 연결.", cta: "무료 자료 받기" },
+        { id: "it-s4", title: "탐구보고서 작성법 45초 쇼츠", channel: "유튜브", type: "쇼츠 대본", due: addDays(4), status: "할일", hook: "실제로 먹힌 세특은 이렇게 다릅니다", body: "탐구가 방법·결과에서 끝나지 않고 한계·후속 질문까지 이어져야 한다는 45초 쇼츠.", cta: "샘플 탐구 설계 보기" },
+        { id: "it-s5", title: "같은 활동도 세특 문장은 달라집니다 — 카드뉴스", channel: "인스타그램", type: "카드뉴스", due: addDays(5), status: "할일", hook: "열심히 했는데 생기부엔 한 줄?", body: "활동 Before → 전공 연결 After → 무료 진단 CTA 구성.", cta: "내 생기부 빈틈 확인" }
       ]
     };
 
-    let state = loadState();
-    let currentView = "dashboard";
-    let activeStatus = "전체";
-    let calendarCursor = new Date(today.getFullYear(), today.getMonth(), 1);
-    let lastAiDraft = null;
+    let state = load();
+    let pendingItemId = null;   // 생성 결과를 특정 카드에 저장할 때
+    let lastDraft = null;
 
-    function cloneSeed() { return JSON.parse(JSON.stringify(seedState)); }
-    function normalizeState(input = {}) {
-      const seed = cloneSeed();
-      return {
-        ...seed,
-        brandGuide: input.brandGuide && typeof input.brandGuide === "object" ? input.brandGuide : seed.brandGuide,
-        targets: Array.isArray(input.targets) ? input.targets : seed.targets,
-        usps: Array.isArray(input.usps) ? input.usps : seed.usps,
-        channelPlans: Array.isArray(input.channelPlans) ? input.channelPlans : seed.channelPlans,
-        copyBank: Array.isArray(input.copyBank) ? input.copyBank : seed.copyBank,
-        promotions: Array.isArray(input.promotions) ? input.promotions : seed.promotions,
-        strategySteps: Array.isArray(input.strategySteps) ? input.strategySteps : seed.strategySteps,
-        campaigns: Array.isArray(input.campaigns) ? input.campaigns : seed.campaigns,
-        items: Array.isArray(input.items) ? input.items : seed.items,
-        competitors: Array.isArray(input.competitors) ? input.competitors : seed.competitors
-      };
-    }
-    function loadState() {
+    function load() {
       try {
-        const saved = localStorage.getItem(STORAGE_KEY);
-        if (!saved) return cloneSeed();
-        const parsed = JSON.parse(saved);
-        return normalizeState(parsed);
-      } catch (error) {
-        return cloneSeed();
-      }
+        const raw = localStorage.getItem(STORE);
+        if (!raw) return structuredClone(seed);
+        const p = JSON.parse(raw);
+        return {
+          weekGoal: typeof p.weekGoal === "string" ? p.weekGoal : seed.weekGoal,
+          brand: p.brand || seed.brand,
+          channelTips: Array.isArray(p.channelTips) ? p.channelTips : seed.channelTips,
+          copyBank: Array.isArray(p.copyBank) ? p.copyBank : seed.copyBank,
+          competitors: Array.isArray(p.competitors) ? p.competitors : seed.competitors,
+          items: Array.isArray(p.items) ? p.items : seed.items
+        };
+      } catch (e) { return structuredClone(seed); }
     }
-    function saveState() { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-    function loadClaudeSettings() {
-      try {
-        return JSON.parse(localStorage.getItem(CLAUDE_KEY)) || { apiKey: "", model: "claude-sonnet-4-5", maxTokens: 2200, temperature: 0.7 };
-      } catch (error) {
-        return { apiKey: "", model: "claude-sonnet-4-5", maxTokens: 2200, temperature: 0.7 };
-      }
+    function save() { localStorage.setItem(STORE, JSON.stringify(state)); }
+
+    function loadClaude() {
+      try { return JSON.parse(localStorage.getItem(CLAUDE_KEY)) || { apiKey:"", model:"claude-sonnet-4-5", maxTokens:2200 }; }
+      catch (e) { return { apiKey:"", model:"claude-sonnet-4-5", maxTokens:2200 }; }
     }
     function saveClaudeSettings() {
-      const settings = {
+      const s = {
         apiKey: document.getElementById("claudeKey").value.trim(),
         model: document.getElementById("claudeModel").value.trim() || "claude-sonnet-4-5",
-        maxTokens: Number(document.getElementById("claudeMaxTokens").value || 2200),
-        temperature: Number(document.getElementById("claudeTemperature").value || 0.7)
+        maxTokens: Number(document.getElementById("claudeMaxTokens").value || 2200)
       };
-      localStorage.setItem(CLAUDE_KEY, JSON.stringify(settings));
+      localStorage.setItem(CLAUDE_KEY, JSON.stringify(s));
       toast("Claude 설정을 저장했습니다.");
     }
-    function hydrateClaudeSettings() {
-      const settings = loadClaudeSettings();
-      document.getElementById("claudeKey").value = settings.apiKey || "";
-      document.getElementById("claudeModel").value = settings.model || "claude-sonnet-4-5";
-      document.getElementById("claudeMaxTokens").value = settings.maxTokens || 2200;
-      document.getElementById("claudeTemperature").value = settings.temperature ?? 0.7;
+    function hydrateClaude() {
+      const s = loadClaude();
+      document.getElementById("claudeKey").value = s.apiKey || "";
+      document.getElementById("claudeModel").value = s.model || "claude-sonnet-4-5";
+      document.getElementById("claudeMaxTokens").value = s.maxTokens || 2200;
     }
     function forgetClaudeKey() {
-      const settings = loadClaudeSettings();
-      settings.apiKey = "";
-      localStorage.setItem(CLAUDE_KEY, JSON.stringify(settings));
+      const s = loadClaude(); s.apiKey = "";
+      localStorage.setItem(CLAUDE_KEY, JSON.stringify(s));
       document.getElementById("claudeKey").value = "";
       toast("API 키를 삭제했습니다.");
     }
 
-    function money(value) { return `${Number(value || 0).toLocaleString("ko-KR")}원`; }
-    function dateLabel(value) {
-      if (!value) return "-";
-      const date = new Date(`${value}T00:00:00`);
-      return `${date.getMonth() + 1}/${date.getDate()}`;
-    }
-    function dayDiff(value) {
-      const target = new Date(`${value}T00:00:00`);
-      const base = new Date(iso(today) + "T00:00:00");
-      return Math.round((target - base) / 86400000);
-    }
-    function campaignName(id) { return state.campaigns.find(campaign => campaign.id === id)?.name || "미분류"; }
-    function escapeHtml(value) {
-      return String(value ?? "")
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-    }
+    const esc = v => String(v ?? "").replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;").replaceAll('"',"&quot;").replaceAll("'","&#039;");
+    const dayDiff = v => { const t = new Date(v+"T00:00:00"), b = new Date(iso(today)+"T00:00:00"); return Math.round((t-b)/86400000); };
+    const dlabel = v => { if(!v) return ""; const d = new Date(v+"T00:00:00"); return `${d.getMonth()+1}/${d.getDate()}`; };
+    function chanColor(id){ return (CHANNELS.find(c=>c.id===id)||{}).color || "var(--green)"; }
 
+    /* ---------- 화면 전환 ---------- */
     function setView(view) {
-      currentView = view;
-      document.querySelectorAll(".view").forEach(section => section.classList.add("hidden"));
+      document.querySelectorAll(".view").forEach(s => s.classList.add("hidden"));
       document.getElementById(`view-${view}`).classList.remove("hidden");
-      document.querySelectorAll(".nav button").forEach(button => button.classList.toggle("active", button.dataset.view === view));
-      const titles = {
-        dashboard: ["마케팅 일정과 콘텐츠를 한곳에서 관리합니다", "광고 소재, 카드뉴스, 릴스, 블로그 글, 캠페인 일정을 개인용 작업판으로 정리하세요."],
-        calendar: ["월간 발행 일정을 확인합니다", "이번 달 어떤 콘텐츠가 언제 나가는지 달력으로 확인하세요."],
-        content: ["콘텐츠 제작 상태를 관리합니다", "기획부터 발행까지 상태, 채널, CTA, 카피 초안을 함께 관리합니다."],
-        ai: ["Claude로 바로 콘텐츠를 생성합니다", "주제 발급, 카드뉴스 구성, 릴스 대본, 블로그 초안, 광고 문구를 앱 안에서 만듭니다."],
-        campaigns: ["캠페인별 목표와 예산을 봅니다", "무료 진단, Before-After, 6개월 전환 캠페인을 나눠 운영하세요."],
-        references: ["경쟁사 참고와 메시지 원칙을 기록합니다", "광고를 만들 때 반복해서 확인할 포지셔닝 메모입니다."]
-      };
-      document.getElementById("pageTitle").textContent = titles[view][0];
-      document.getElementById("pageLead").textContent = titles[view][1];
-      renderAll();
+      document.querySelectorAll(".nav button").forEach(b => b.classList.toggle("active", b.dataset.view === view));
+      if (view === "board") renderBoard();
+      if (view === "history") renderHistory();
+      if (view === "library") renderLibrary();
+      window.scrollTo(0,0);
     }
 
-    function renderAll() {
-      renderSelects();
-      renderStatusTabs();
-      renderDashboard();
-      renderContent();
-      renderCalendar();
-      renderCampaigns();
-      renderCompetitors();
-      renderMarketingPlan();
+    /* ---------- 이번 주 보드 ---------- */
+    function renderBoard() {
+      document.getElementById("weekGoal").value = state.weekGoal || "";
+      const active = state.items.filter(i => i.status !== "발행");
+      const done = state.items.filter(i => i.status === "발행");
+      const weekCount = active.filter(i => dayDiff(i.due) >= 0 && dayDiff(i.due) <= 7).length;
+
+      document.getElementById("boardStats").innerHTML = `
+        <div><b>${active.length}</b><span>할 일</span></div>
+        <div><b>${weekCount}</b><span>이번 주(7일)</span></div>
+        <div><b>${done.length}</b><span>발행 완료</span></div>`;
+
+      document.getElementById("board").innerHTML = CHANNELS.map(c => {
+        const list = active.filter(i => i.channel === c.id).sort((a,b)=>(a.due||"").localeCompare(b.due||""));
+        const tip = state.channelTips.find(t => t.channel === c.id);
+        return `<div class="col">
+          <div class="col-head">
+            <span class="col-dot" style="background:${c.color}"></span>
+            <b>${c.emoji} ${esc(c.id)}</b>
+            <span class="cnt">${list.length}</span>
+            <button class="add" type="button" title="추가" onclick="addCard('${esc(c.id)}')">＋</button>
+          </div>
+          <div class="col-body">
+            ${list.length ? list.map(cardHTML).join("") : `<div class="col-empty">아직 없어요.<br>＋로 추가하거나<br>‘콘텐츠 만들기’에서 생성하세요.</div>`}
+          </div>
+          ${tip ? `<div class="col-tip">💡 ${esc(tip.purpose)} · ${esc(tip.cadence)}</div>` : ""}
+        </div>`;
+      }).join("");
+
+      document.getElementById("donePeek").textContent = done.length;
     }
 
-    function fillSelect(id, values) {
-      const select = document.getElementById(id);
-      if (!select) return;
-      const current = select.value;
-      select.innerHTML = values.map(value => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
-      if (values.includes(current)) select.value = current;
+    function cardHTML(i) {
+      const wk = (i.status !== "발행" && dayDiff(i.due) >= 0 && dayDiff(i.due) <= 7);
+      const isDone = i.status === "발행";
+      return `<article class="card ${isDone?"done":""}">
+        <h4>${esc(i.title)}</h4>
+        ${i.hook ? `<p class="hook">${esc(i.hook)}</p>` : ""}
+        <div class="card-meta">
+          <span class="pill ${statusClass[i.status]}">${statusLabel[i.status]}</span>
+          ${i.due ? `<span class="pill ${wk?"week":""}" style="${wk?"":"background:#f0ece2;color:#8a8270"}">${dlabel(i.due)}</span>` : ""}
+        </div>
+        <div class="card-actions">
+          <button class="ico gen" type="button" onclick="genForItem('${i.id}')">✦ 생성</button>
+          <button class="ico" type="button" onclick="editCard('${i.id}')">열기</button>
+          <button class="ico" type="button" onclick="copyItem('${i.id}')">복사</button>
+          ${isDone
+            ? `<button class="ico" type="button" onclick="reopen('${i.id}')">되돌리기</button>`
+            : `<button class="ico done" type="button" onclick="markDone('${i.id}')">✓ 발행</button>`}
+        </div>
+      </article>`;
     }
 
-    function renderSelects() {
-      fillSelect("channelFilter", ["전체 채널", ...channels]);
-      fillSelect("campaignFilter", ["전체 캠페인", ...state.campaigns.map(campaign => campaign.name)]);
-      fillSelect("itemChannel", channels);
-      fillSelect("itemFormat", formats);
-      fillSelect("itemStatus", statuses);
-      fillSelect("aiChannel", channels);
-      const campaignOptions = state.campaigns.map(campaign => `<option value="${campaign.id}">${escapeHtml(campaign.name)}</option>`).join("");
-      ["itemCampaign", "aiCampaign"].forEach(id => {
-        const select = document.getElementById(id);
-        if (select) select.innerHTML = campaignOptions;
-      });
+    function saveGoal() { state.weekGoal = document.getElementById("weekGoal").value; save(); }
+    function markDone(id) { const i = state.items.find(x=>x.id===id); if(i){ i.status="발행"; i.publishedAt = iso(today); save(); renderBoard(); toast("발행 완료! 발행 기록에 저장됐어요."); } }
+    function reopen(id) { const i = state.items.find(x=>x.id===id); if(i){ i.status = i.body ? "초안":"할일"; save(); renderBoard(); } }
+
+    /* ---------- 발행 기록 & 중복 감지 ---------- */
+    function normSim(s) { return String(s||"").toLowerCase().replace(/[^0-9a-z가-힣]/g,""); }
+    function bigrams(s) {
+      const n = normSim(s); const set = new Set();
+      if (n.length < 2) { if (n) set.add(n); return set; }
+      for (let i=0;i<n.length-1;i++) set.add(n.slice(i,i+2));
+      return set;
+    }
+    function simScore(a, b) {
+      const A = bigrams(a), B = bigrams(b);
+      if (!A.size || !B.size) return 0;
+      let inter = 0; A.forEach(x => { if (B.has(x)) inter++; });
+      return inter / (A.size + B.size - inter);
+    }
+    function publishedList() { return state.items.filter(i => i.status === "발행"); }
+    function histDate(i) { return i.publishedAt || i.due || ""; }
+    function findSimilar(text, threshold = 0.42) {
+      const t = (text||"").trim();
+      if (t.length < 4) return [];
+      return publishedList()
+        .map(i => ({ i, s: Math.max(simScore(t, i.title), simScore(t, i.hook||"")) }))
+        .filter(o => o.s >= threshold)
+        .sort((a,b) => b.s - a.s)
+        .slice(0,3)
+        .map(o => o.i);
     }
 
-    function renderStatusTabs() {
-      const root = document.getElementById("statusTabs");
-      root.innerHTML = ["전체", ...statuses].map(status => {
-        const count = status === "전체" ? state.items.length : state.items.filter(item => item.status === status).length;
-        return `<button class="tab ${activeStatus === status ? "active" : ""}" type="button" onclick="setStatus('${status}')">${status} ${count}</button>`;
+    function renderHistory() {
+      const q = (document.getElementById("histSearch")?.value || "").trim().toLowerCase();
+      let list = publishedList().sort((a,b) => histDate(b).localeCompare(histDate(a)));
+      const total = list.length;
+      if (q) list = list.filter(i => [i.title,i.hook,i.channel,i.type].join(" ").toLowerCase().includes(q));
+
+      document.getElementById("histStats").innerHTML = `
+        <div><b>${total}</b><span>총 발행</span></div>
+        <div><b>${q ? list.length : new Set(publishedList().map(i=>(histDate(i)||"").slice(0,7))).size}</b><span>${q ? "검색결과" : "발행한 달"}</span></div>`;
+
+      const root = document.getElementById("histList");
+      if (!list.length) {
+        root.innerHTML = `<div class="col-empty">${total ? "검색 결과가 없어요." : "아직 발행한 콘텐츠가 없어요. 카드에서 ✓발행을 누르면 여기에 쌓입니다."}</div>`;
+        return;
+      }
+      // 달별 그룹
+      const groups = {};
+      list.forEach(i => { const k = (histDate(i)||"날짜 미상").slice(0,7); (groups[k] = groups[k] || []).push(i); });
+      root.innerHTML = Object.keys(groups).sort((a,b)=>b.localeCompare(a)).map(month => {
+        const label = /^\d{4}-\d{2}$/.test(month) ? `${month.slice(0,4)}년 ${Number(month.slice(5,7))}월` : month;
+        return `<div class="hist-month">${label} · ${groups[month].length}개</div>
+          <div class="hist-grid">${groups[month].map(histCard).join("")}</div>`;
       }).join("");
     }
-    function setStatus(status) { activeStatus = status; renderStatusTabs(); renderContent(); }
-
-    function renderDashboard() {
-      const live = state.items.filter(item => item.status === "발행").length;
-      const done = state.items.filter(item => item.status === "완료").length;
-      const upcoming = state.items.filter(item => dayDiff(item.dueDate) >= 0 && dayDiff(item.dueDate) <= 7).length;
-      const budget = state.items.reduce((sum, item) => sum + Number(item.budget || 0), 0) + state.campaigns.reduce((sum, campaign) => sum + Number(campaign.budget || 0), 0);
-      document.getElementById("stats").innerHTML = [
-        ["전체 콘텐츠", state.items.length, "등록된 광고·콘텐츠 작업"],
-        ["이번 주 마감", upcoming, "7일 안에 처리할 일"],
-        ["발행/완료", live + done, "현재 공개 또는 마감된 작업"],
-        ["예산 메모", money(budget), "캠페인과 콘텐츠 예산 합계"]
-      ].map(stat => `<article class="stat"><span>${stat[0]}</span><strong>${stat[1]}</strong><small>${stat[2]}</small></article>`).join("");
-      const list = state.items.filter(item => dayDiff(item.dueDate) >= 0).sort((a, b) => a.dueDate.localeCompare(b.dueDate)).slice(0, 7);
-      document.getElementById("upcomingList").innerHTML = list.length ? `
-        <div class="table-wrap">
-          <table>
-            <thead><tr><th>작업</th><th>채널</th><th>마감</th><th>상태</th><th>관리</th></tr></thead>
-            <tbody>${list.map(item => `
-              <tr>
-                <td><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.hook || "")}</small></td>
-                <td>${escapeHtml(item.channel)}</td>
-                <td>${dateLabel(item.dueDate)}<small>D${dayDiff(item.dueDate) === 0 ? "-DAY" : dayDiff(item.dueDate) > 0 ? "-" + dayDiff(item.dueDate) : "+" + Math.abs(dayDiff(item.dueDate))}</small></td>
-                <td><span class="pill ${statusClass[item.status]}">${escapeHtml(item.status)}</span></td>
-                <td><button class="mini" type="button" onclick="editItem('${item.id}')">열기</button></td>
-              </tr>`).join("")}</tbody>
-          </table>
-        </div>` : `<div class="empty">다가오는 일정이 없습니다. 새 콘텐츠를 등록해 이번 주 계획을 잡아보세요.</div>`;
-      renderReviewQueue();
+    function histCard(i) {
+      return `<article class="card">
+        <div class="card-meta" style="margin-top:0">
+          <span class="pill live">${esc(dlabel(histDate(i)) || "-")}</span>
+          <span class="pill" style="background:#eef0f4;color:#4a5468">${esc(i.channel)} · ${esc(i.type)}</span>
+        </div>
+        <h4 style="margin-top:8px">${esc(i.title)}</h4>
+        ${i.hook ? `<p class="hook">${esc(i.hook)}</p>` : ""}
+        <div class="card-actions">
+          <button class="ico" type="button" onclick="reuseItem('${i.id}')">↻ 재사용</button>
+          <button class="ico" type="button" onclick="copyItem('${i.id}')">복사</button>
+          <button class="ico" type="button" onclick="deleteFromHistory('${i.id}')">삭제</button>
+        </div>
+      </article>`;
+    }
+    function reuseItem(id) {
+      const i = state.items.find(x=>x.id===id); if(!i) return;
+      state.items.push({ id: uid(), title: i.title, channel: i.channel, type: i.type,
+        due: addDays(2), status: "할일", hook: i.hook||"", body: i.body||"", cta: i.cta||"" });
+      save(); toast("이번 주 보드에 '할일'로 다시 올렸어요."); setView("board");
+    }
+    function deleteFromHistory(id) {
+      if (!confirm("이 발행 기록을 삭제할까요? (중복 감지 대상에서도 빠집니다)")) return;
+      state.items = state.items.filter(x=>x.id!==id);
+      save(); renderHistory(); toast("발행 기록에서 삭제했어요.");
     }
 
-    function renderReviewQueue() {
-      const root = document.getElementById("reviewQueue");
-      if (!root) return;
-      const drafts = state.items.filter(item => item.status === "검토").sort((a, b) => a.dueDate.localeCompare(b.dueDate)).slice(0, 5);
-      root.innerHTML = drafts.length ? `
-        <div class="campaign-list">
-          ${drafts.map(item => `
-            <article class="campaign">
-              <div class="campaign-top">
-                <div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.hook || "")}</p></div>
-                <span class="pill ready">${escapeHtml(item.channel)}</span>
-              </div>
-              <p><b>마감</b> ${escapeHtml(item.dueDate)} · <b>CTA</b> ${escapeHtml(item.cta || "-")}</p>
-              <div class="row-actions" style="margin-top:10px">
-                <button class="mini" type="button" onclick="editItem('${item.id}')">확인·수정</button>
-                <button class="mini" type="button" onclick="advanceStatus('${item.id}')">제작으로 이동</button>
-              </div>
-            </article>
-          `).join("")}
-        </div>` : `<div class="empty">검토 대기 초안이 없습니다. Claude 생성실에서 자동 초안을 만들어보세요.</div>`;
+    function checkDuplicate() {
+      const text = document.getElementById("mkTopic").value;
+      const warn = document.getElementById("dupWarn");
+      const hits = findSimilar(text);
+      if (!hits.length) { warn.style.display = "none"; warn.innerHTML = ""; return; }
+      warn.style.display = "";
+      warn.innerHTML = `<b>⚠ 비슷한 주제를 이미 발행했어요.</b> 새 각도로 비틀거나 날짜를 확인하세요.
+        <ul>${hits.map(i => `<li>${esc(dlabel(histDate(i)))} · ${esc(i.channel)} · ${esc(i.title)}</li>`).join("")}</ul>`;
     }
 
-    function showReviewQueue() {
-      activeStatus = "검토";
-      setView("content");
-    }
-
-    function getFilteredItems() {
-      const search = (document.getElementById("searchInput")?.value || "").trim().toLowerCase();
-      const channel = document.getElementById("channelFilter")?.value || "전체 채널";
-      const campaign = document.getElementById("campaignFilter")?.value || "전체 캠페인";
-      const sort = document.getElementById("sortFilter")?.value || "date";
-      let items = state.items.filter(item => {
-        const text = [item.title, item.channel, item.format, item.target, item.goal, item.hook, item.body, item.cta, item.notes].join(" ").toLowerCase();
-        return (activeStatus === "전체" || item.status === activeStatus)
-          && (channel === "전체 채널" || item.channel === channel)
-          && (campaign === "전체 캠페인" || campaignName(item.campaignId) === campaign)
-          && (!search || text.includes(search));
-      });
-      const priorityScore = { "높음": 0, "중간": 1, "낮음": 2 };
-      items.sort((a, b) => {
-        if (sort === "priority") return priorityScore[a.priority] - priorityScore[b.priority] || a.dueDate.localeCompare(b.dueDate);
-        if (sort === "channel") return a.channel.localeCompare(b.channel, "ko") || a.dueDate.localeCompare(b.dueDate);
-        return a.dueDate.localeCompare(b.dueDate);
-      });
-      return items;
-    }
-
-    function renderContent() {
-      const rows = getFilteredItems();
-      document.getElementById("contentRows").innerHTML = rows.length ? rows.map(item => `
-        <tr>
-          <td><strong>${escapeHtml(item.title)}</strong><small>${escapeHtml(item.hook || "")}</small><small>캠페인: ${escapeHtml(campaignName(item.campaignId))}</small></td>
-          <td>${escapeHtml(item.channel)}<small>${escapeHtml(item.format)}</small></td>
-          <td>${escapeHtml(item.dueDate)}<small>${dateLabel(item.dueDate)}</small></td>
-          <td><span class="pill ${statusClass[item.status]}">${escapeHtml(item.status)}</span> <span class="pill ${priorityClass[item.priority]}">${escapeHtml(item.priority)}</span></td>
-          <td>${escapeHtml(item.goal || "-")}<small>CTA: ${escapeHtml(item.cta || "-")}</small></td>
-          <td><div class="row-actions"><button class="mini" type="button" onclick="editItem('${item.id}')">수정</button><button class="mini" type="button" onclick="advanceStatus('${item.id}')">다음</button><button class="mini" type="button" onclick="duplicateItem('${item.id}')">복제</button></div></td>
-        </tr>`).join("") : `<tr><td colspan="6"><div class="empty">조건에 맞는 콘텐츠가 없습니다.</div></td></tr>`;
-    }
-
-    function renderCalendar() {
-      const year = calendarCursor.getFullYear();
-      const month = calendarCursor.getMonth();
-      document.getElementById("calendarTitle").textContent = `${year}년 ${month + 1}월`;
-      const first = new Date(year, month, 1);
-      const start = new Date(first);
-      start.setDate(start.getDate() - first.getDay());
-      const cells = ["일", "월", "화", "수", "목", "금", "토"].map(day => `<div class="weekday">${day}</div>`);
-      for (let i = 0; i < 42; i += 1) {
-        const date = new Date(start);
-        date.setDate(start.getDate() + i);
-        const value = iso(date);
-        const items = state.items.filter(item => item.dueDate === value);
-        cells.push(`<div class="day ${date.getMonth() === month ? "" : "off"}"><b>${date.getDate()}</b>${items.slice(0, 3).map(item => `<button class="dot" type="button" onclick="editItem('${item.id}')" title="${escapeHtml(item.title)}">${escapeHtml(item.channel)} · ${escapeHtml(item.title)}</button>`).join("")}${items.length > 3 ? `<span class="dot">+${items.length - 3}개 더</span>` : ""}</div>`);
-      }
-      document.getElementById("monthGrid").innerHTML = cells.join("");
-    }
-    function moveMonth(offset) { calendarCursor = new Date(calendarCursor.getFullYear(), calendarCursor.getMonth() + offset, 1); renderCalendar(); }
-
-    function renderCampaigns() {
-      document.getElementById("campaignList").innerHTML = state.campaigns.map(campaign => {
-        const items = state.items.filter(item => item.campaignId === campaign.id);
-        const done = items.filter(item => item.status === "완료" || item.status === "발행").length;
-        const progress = items.length ? Math.round((done / items.length) * 100) : 0;
-        return `<article class="campaign">
-          <div class="campaign-top"><div><h3>${escapeHtml(campaign.name)}</h3><p>${escapeHtml(campaign.objective || "")}</p></div><span class="pill ${campaign.status === "진행" ? "live" : campaign.status === "완료" ? "done" : "plan"}">${escapeHtml(campaign.status)}</span></div>
-          <p><b>기간</b> ${escapeHtml(campaign.start)} ~ ${escapeHtml(campaign.end)} · <b>예산</b> ${money(campaign.budget)}</p>
-          <p><b>오퍼</b> ${escapeHtml(campaign.offer || "-")}</p>
-          <div class="progress"><i style="width:${progress}%"></i></div>
-          <p>${items.length}개 콘텐츠 중 ${done}개 발행/완료</p>
-          <div class="row-actions" style="margin-top:10px"><button class="mini" type="button" onclick="editCampaign('${campaign.id}')">수정</button><button class="mini" type="button" onclick="newItemForCampaign('${campaign.id}')">콘텐츠 추가</button></div>
-        </article>`;
-      }).join("");
-    }
-
-    function renderCompetitors() {
-      document.getElementById("competitorList").innerHTML = state.competitors.map(item => `
-        <article class="campaign"><div class="campaign-top"><h3>${escapeHtml(item.name)}</h3><span class="pill plan">참고</span></div><p><b>강점</b> ${escapeHtml(item.focus)}</p><p><b>에바연 대응</b> ${escapeHtml(item.implication)}</p></article>
-      `).join("");
-    }
-
-    function tableHTML(headers, rows) {
-      return `<table><thead><tr>${headers.map(header => `<th>${escapeHtml(header)}</th>`).join("")}</tr></thead><tbody>${rows.map(row => `<tr>${row.map(cell => `<td>${escapeHtml(cell)}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
-    }
-    function renderMarketingPlan() {
-      const brand = state.brandGuide || seedState.brandGuide;
-      document.getElementById("brandBoard").innerHTML = [
-        `<div class="quote-card">${escapeHtml(brand.openingLine)}<p style="margin:8px 0 0;color:#715a24;font-size:12px;font-weight:800">${escapeHtml(brand.coreMessage)}</p></div>`,
-        `<div class="strategy-card"><b>브랜드</b><p>${escapeHtml(brand.name)}<br>${escapeHtml(brand.oneLine)}</p></div>`,
-        `<div class="strategy-card"><b>슬로건</b><p>${escapeHtml(brand.slogan)}</p></div>`,
-        `<div class="strategy-card"><b>핵심 강점</b><p>${escapeHtml(brand.strengths)}</p></div>`,
-        `<div class="strategy-card"><b>포지셔닝</b><p>${escapeHtml(brand.positioning)}</p></div>`,
-        `<div class="strategy-card"><b>해시태그</b><p>${escapeHtml(brand.hashtags)}</p></div>`
-      ].join("");
-
-      document.getElementById("targetTable").innerHTML = tableHTML(
-        ["타깃", "핵심 니즈", "페인포인트", "에바연 해결책"],
-        state.targets.map(item => [item.group, item.need, item.pain, item.solution])
-      );
-      document.getElementById("uspTable").innerHTML = tableHTML(
-        ["차별 포인트", "설명", "경쟁사 대비 강점"],
-        state.usps.map(item => [item.point, item.description, item.advantage])
-      );
-      document.getElementById("channelPlanTable").innerHTML = tableHTML(
-        ["채널", "목적", "콘텐츠 형태", "핵심 메시지", "게시 주기"],
-        state.channelPlans.map(item => [item.channel, item.purpose, item.format, item.message, item.cadence])
-      );
-
-      const copyCards = state.copyBank.slice(0, 5).map(item => `
-        <article class="campaign">
-          <span class="pill ready">${escapeHtml(item.type)}</span>
-          <h3 style="margin-top:10px">${escapeHtml(item.headline)}</h3>
-          <p>${escapeHtml(item.body)}</p>
-          <p><b>CTA</b> ${escapeHtml(item.cta)}</p>
-        </article>
-      `).join("");
-      const promoCards = state.promotions.map(item => `
-        <article class="campaign">
-          <span class="pill plan">혜택</span>
-          <h3 style="margin-top:10px">${escapeHtml(item.name)}</h3>
-          <p>${escapeHtml(item.detail)}</p>
-          <p><b>활용</b> ${escapeHtml(item.timing)}</p>
-        </article>
-      `).join("");
-      document.getElementById("messagePrinciples").innerHTML = `
-        <div class="campaign"><span class="pill live">핵심 메시지</span><p>${escapeHtml(brand.coreMessage)}</p></div>
-        <div class="campaign"><span class="pill ready">카피뱅크</span><p>시트의 주요 카피 중 바로 쓸 문구 5개를 우선 노출합니다.</p></div>
-        ${copyCards}
-        <div class="campaign"><span class="pill high">프로모션</span><p>무료 자료, 얼리버드, 후기, 친구추천을 리드 수집과 전환 소재로 사용합니다.</p></div>
-        ${promoCards}
-      `;
-      document.getElementById("strategySteps").innerHTML = state.strategySteps.map(item => `
-        <article class="campaign">
-          <span class="pill live">${escapeHtml(item.step)}</span>
-          <p>${escapeHtml(item.detail)}</p>
-          <p><b>키워드/제목</b> ${escapeHtml(item.keywords)}</p>
-        </article>
-      `).join("");
-    }
-
-    function openEditor(item = null) {
-      const isEdit = Boolean(item?.id);
-      document.getElementById("editorTitle").textContent = isEdit ? "콘텐츠 수정" : "콘텐츠 등록";
-      document.getElementById("deleteItemButton").style.visibility = isEdit ? "visible" : "hidden";
-      document.getElementById("itemId").value = item?.id || "";
-      document.getElementById("itemTitle").value = item?.title || "";
-      document.getElementById("itemChannel").value = item?.channel || channels[0];
-      document.getElementById("itemFormat").value = item?.format || formats[0];
-      document.getElementById("itemDue").value = item?.dueDate || addDays(3);
-      document.getElementById("itemStatus").value = item?.status || "기획";
-      document.getElementById("itemCampaign").value = item?.campaignId || state.campaigns[0]?.id || "";
-      document.getElementById("itemPriority").value = item?.priority || "중간";
-      document.getElementById("itemTarget").value = item?.target || "";
-      document.getElementById("itemGoal").value = item?.goal || "";
-      document.getElementById("itemHook").value = item?.hook || "";
-      document.getElementById("itemBody").value = item?.body || "";
-      document.getElementById("itemCta").value = item?.cta || "무료 진단으로 시작";
-      document.getElementById("itemBudget").value = item?.budget || 0;
-      document.getElementById("itemNotes").value = item?.notes || "";
-      document.getElementById("editorDialog").showModal();
-    }
-    function closeEditor() { document.getElementById("editorDialog").close(); }
-    function editItem(id) { const item = state.items.find(entry => entry.id === id); if (item) openEditor(item); }
-    function saveContent(event) {
-      event.preventDefault();
-      const id = document.getElementById("itemId").value || `item-${Date.now()}`;
-      const payload = {
-        id,
-        title: document.getElementById("itemTitle").value.trim(),
-        channel: document.getElementById("itemChannel").value,
-        format: document.getElementById("itemFormat").value,
-        dueDate: document.getElementById("itemDue").value,
-        status: document.getElementById("itemStatus").value,
-        campaignId: document.getElementById("itemCampaign").value,
-        priority: document.getElementById("itemPriority").value,
-        target: document.getElementById("itemTarget").value.trim(),
-        goal: document.getElementById("itemGoal").value.trim(),
-        hook: document.getElementById("itemHook").value.trim(),
-        body: document.getElementById("itemBody").value.trim(),
-        cta: document.getElementById("itemCta").value.trim(),
-        budget: Number(document.getElementById("itemBudget").value || 0),
-        notes: document.getElementById("itemNotes").value.trim()
-      };
-      const index = state.items.findIndex(item => item.id === id);
-      if (index >= 0) state.items[index] = payload; else state.items.push(payload);
-      saveState();
-      closeEditor();
-      renderAll();
-      toast("콘텐츠가 저장되었습니다.");
-    }
-    function deleteCurrentItem() {
-      const id = document.getElementById("itemId").value;
-      if (!id || !confirm("이 콘텐츠를 삭제할까요?")) return;
-      state.items = state.items.filter(item => item.id !== id);
-      saveState();
-      closeEditor();
-      renderAll();
-      toast("콘텐츠를 삭제했습니다.");
-    }
-    function advanceStatus(id) {
-      const item = state.items.find(entry => entry.id === id);
-      if (!item) return;
-      item.status = statuses[Math.min(statuses.length - 1, statuses.indexOf(item.status) + 1)];
-      saveState();
-      renderAll();
-      toast(`상태를 '${item.status}'로 변경했습니다.`);
-    }
-    function duplicateItem(id) {
-      const item = state.items.find(entry => entry.id === id);
-      if (!item) return;
-      state.items.push({ ...item, id: `item-${Date.now()}`, title: `${item.title} 복사본`, status: "기획" });
-      saveState();
-      renderAll();
-      toast("콘텐츠를 복제했습니다.");
-    }
-    function newItemForCampaign(campaignId) {
-      openEditor({ campaignId, channel: channels[0], format: formats[0], dueDate: addDays(3), status: "기획", priority: "중간", cta: "무료 진단으로 시작" });
-    }
-
-    function openCampaignEditor() { clearCampaignForm(); document.getElementById("campaignName").focus(); }
-    function editCampaign(id) {
-      const campaign = state.campaigns.find(entry => entry.id === id);
-      if (!campaign) return;
-      document.getElementById("campaignId").value = campaign.id;
-      document.getElementById("campaignName").value = campaign.name;
-      document.getElementById("campaignStart").value = campaign.start;
-      document.getElementById("campaignEnd").value = campaign.end;
-      document.getElementById("campaignBudget").value = campaign.budget;
-      document.getElementById("campaignStatus").value = campaign.status;
-      document.getElementById("campaignObjective").value = campaign.objective;
-      document.getElementById("campaignOffer").value = campaign.offer;
-      document.getElementById("campaignName").focus();
-    }
-    function saveCampaign(event) {
-      event.preventDefault();
-      const id = document.getElementById("campaignId").value || `camp-${Date.now()}`;
-      const payload = {
-        id,
-        name: document.getElementById("campaignName").value.trim(),
-        start: document.getElementById("campaignStart").value,
-        end: document.getElementById("campaignEnd").value,
-        budget: Number(document.getElementById("campaignBudget").value || 0),
-        status: document.getElementById("campaignStatus").value,
-        objective: document.getElementById("campaignObjective").value.trim(),
-        offer: document.getElementById("campaignOffer").value.trim()
-      };
-      const index = state.campaigns.findIndex(campaign => campaign.id === id);
-      if (index >= 0) state.campaigns[index] = payload; else state.campaigns.push(payload);
-      saveState();
-      clearCampaignForm();
-      renderAll();
-      toast("캠페인이 저장되었습니다.");
-    }
-    function clearCampaignForm() {
-      document.getElementById("campaignForm").reset();
-      document.getElementById("campaignId").value = "";
-      document.getElementById("campaignStart").value = addDays(0);
-      document.getElementById("campaignEnd").value = addDays(30);
-      document.getElementById("campaignStatus").value = "준비";
-    }
-
-    function clampNumber(value, min, max, fallback) {
-      const number = Number(value);
-      if (!Number.isFinite(number)) return fallback;
-      return Math.min(max, Math.max(min, Math.round(number)));
-    }
-    function formatForChannel(channel) {
-      if (channel.includes("검색")) return "검색광고";
-      if (channel.includes("인스타")) return "카드뉴스";
-      if (channel.includes("쇼츠") || channel.includes("유튜브")) return "쇼츠";
-      if (channel.includes("블로그")) return "블로그 글";
-      if (channel.includes("카카오") || channel.includes("문자")) return "문자";
-      return "카드뉴스";
-    }
-    function bodyForAutoDraft(copy, channel, campaign, target, index) {
-      const brand = state.brandGuide || seedState.brandGuide;
-      if (channel.includes("검색")) {
-        return `제목안 ${index + 1}: ${copy.headline}
-설명: ${copy.body}
-확장 문구: ${brand.coreMessage}
-랜딩 방향: 무료 진단 페이지로 연결`;
-      }
-      if (channel.includes("블로그")) {
-        return `글 구성
-1. 검색자가 느끼는 문제: ${copy.headline}
-2. 흔한 해결 방식의 한계
-3. 에바연 해결책: ${campaign?.offer || brand.coreMessage}
-4. 체크리스트 3개
-5. CTA: ${copy.cta}`;
-      }
-      if (channel.includes("쇼츠") || channel.includes("유튜브")) {
-        return `0~3초 훅: ${copy.headline}
-4~20초 문제 상황: ${copy.body}
-21~35초 해결 방향: 진단 → 추천 탐구자료 → 탐구 설계 → 주간 플래너
-36~45초 CTA: ${copy.cta}`;
-      }
-      if (channel.includes("카카오") || channel.includes("문자")) {
-        return `${target || "학부모"}님, ${copy.headline}
-${copy.body}
-${copy.cta}`;
-      }
-      return `카드 구성
-1장 훅: ${copy.headline}
-2장 문제: ${copy.body}
-3장 비교: 단순 자료 추천 vs 진단 기반 설계
-4장 해결: ${campaign?.offer || brand.coreMessage}
-5장 CTA: ${copy.cta}`;
-    }
-    function autoProduceDrafts() {
-      const count = clampNumber(document.getElementById("autoDraftCount").value, 1, 12, 5);
-      const interval = clampNumber(document.getElementById("autoDraftInterval").value, 1, 14, 2);
-      const status = document.getElementById("autoDraftStatus").value || "검토";
-      const channel = document.getElementById("aiChannel").value || channels[0];
-      const campaignId = document.getElementById("aiCampaign").value || state.campaigns[0]?.id || "";
-      const campaign = state.campaigns.find(item => item.id === campaignId);
-      const target = document.getElementById("aiTarget").value.trim() || "고1·고2 학부모";
-      const format = formatForChannel(channel);
-      const startOffset = state.items.length;
+    function autoFillWeek() {
       const created = [];
-
-      for (let index = 0; index < count; index += 1) {
-        const copy = state.copyBank[(startOffset + index) % state.copyBank.length];
-        const item = {
-          id: `item-auto-${Date.now()}-${index}`,
-          title: `${copy.headline} ${format} 초안`,
-          channel,
-          format,
-          dueDate: addDays(1 + index * interval),
-          status,
-          campaignId,
-          priority: index < 2 ? "높음" : "중간",
-          target,
-          goal: campaign?.objective || "무료 진단 클릭",
-          hook: copy.headline,
-          body: bodyForAutoDraft(copy, channel, campaign, target, index),
-          cta: copy.cta || "무료 진단 시작",
-          budget: channel.includes("검색") ? 30000 : 0,
-          notes: `자동 생산 초안 · 원천: 광고기획 시트 카피뱅크 / 캠페인: ${campaign?.name || "미분류"}`
-        };
-        state.items.push(item);
-        created.push(item);
-      }
-
-      saveState();
-      activeStatus = status;
-      renderAll();
-      document.getElementById("aiResult").textContent = created.map((item, index) => `${index + 1}. ${item.title}
-채널: ${item.channel} / 상태: ${item.status} / 마감: ${item.dueDate}
-훅: ${item.hook}
-CTA: ${item.cta}`).join("\n\n");
-      toast(`${created.length}개 초안을 ${status} 상태로 저장했습니다.`);
-      setView("content");
+      CHANNELS.forEach((c, ci) => {
+        const copy = state.copyBank[ci % state.copyBank.length];
+        created.push({
+          id: uid(), title: `${copy.headline}`.slice(0,40) + ` — ${TYPES[c.id][0]}`,
+          channel: c.id, type: TYPES[c.id][0], due: addDays(1 + ci*2), status: "할일",
+          hook: copy.headline, body: `${copy.body}\nCTA: ${copy.cta}`, cta: copy.cta
+        });
+      });
+      state.items.push(...created);
+      save(); renderBoard();
+      toast("4채널에 이번 주 할 일을 한 개씩 채웠어요.");
     }
 
-    function makeClaudePrompt() {
-      const type = document.getElementById("aiType").value;
-      const typeLabel = document.getElementById("aiType").selectedOptions[0].textContent;
-      const channel = document.getElementById("aiChannel").value;
-      const campaignId = document.getElementById("aiCampaign").value;
-      const target = document.getElementById("aiTarget").value.trim();
-      const brief = document.getElementById("aiBrief").value.trim();
-      const extra = document.getElementById("aiExtra").value.trim();
-      const campaign = state.campaigns.find(item => item.id === campaignId);
-      const brand = state.brandGuide || seedState.brandGuide;
-      const competitors = state.competitors.map(item => `- ${item.name}: 강점=${item.focus}, 대응=${item.implication}`).join("\n");
-      const targetGuide = state.targets.map(item => `- ${item.group}: 니즈=${item.need} / 고민=${item.pain} / 해결=${item.solution}`).join("\n");
-      const uspGuide = state.usps.map(item => `- ${item.point}: ${item.description} / 경쟁우위=${item.advantage}`).join("\n");
-      const copyGuide = state.copyBank.map(item => `- [${item.type}] ${item.headline} / CTA=${item.cta}`).join("\n");
-      const strategyGuide = state.strategySteps.map(item => `- ${item.step}: ${item.detail} / ${item.keywords}`).join("\n");
-      return `너는 에바연의 입시·학생부 마케팅 콘텐츠 디렉터다.
+    /* ---------- 카드 편집 ---------- */
+    function fillSel(id, values, current) {
+      const s = document.getElementById(id);
+      s.innerHTML = values.map(v => `<option value="${esc(v)}">${esc(v)}</option>`).join("");
+      if (current && values.includes(current)) s.value = current;
+    }
+    function syncEditTypes() {
+      const ch = document.getElementById("ed_channel").value;
+      fillSel("ed_type", TYPES[ch] || ["콘텐츠"]);
+    }
+    function addCard(channel) {
+      openEdit({ channel, type: (TYPES[channel]||["콘텐츠"])[0], due: addDays(2), status: "할일", cta: "무료 진단으로 시작" });
+    }
+    function editCard(id) { const i = state.items.find(x=>x.id===id); if(i) openEdit(i); }
+    function openEdit(i) {
+      document.getElementById("editTitle").textContent = i.id ? "콘텐츠 수정" : "새 콘텐츠";
+      document.getElementById("ed_id").value = i.id || "";
+      document.getElementById("ed_title").value = i.title || "";
+      fillSel("ed_channel", CHANNELS.map(c=>c.id), i.channel || CHANNELS[0].id);
+      fillSel("ed_type", TYPES[i.channel || CHANNELS[0].id], i.type);
+      document.getElementById("ed_due").value = i.due || addDays(2);
+      document.getElementById("ed_status").value = i.status || "할일";
+      document.getElementById("ed_hook").value = i.hook || "";
+      document.getElementById("ed_body").value = i.body || "";
+      document.getElementById("ed_cta").value = i.cta || "";
+      document.getElementById("editDialog").showModal();
+    }
+    function closeEdit() { document.getElementById("editDialog").close(); }
+    function saveCard(e) {
+      e.preventDefault();
+      const id = document.getElementById("ed_id").value || uid();
+      const payload = {
+        id,
+        title: document.getElementById("ed_title").value.trim(),
+        channel: document.getElementById("ed_channel").value,
+        type: document.getElementById("ed_type").value,
+        due: document.getElementById("ed_due").value,
+        status: document.getElementById("ed_status").value,
+        hook: document.getElementById("ed_hook").value.trim(),
+        body: document.getElementById("ed_body").value.trim(),
+        cta: document.getElementById("ed_cta").value.trim()
+      };
+      const idx = state.items.findIndex(x=>x.id===id);
+      if (idx>=0) state.items[idx] = payload; else state.items.push(payload);
+      save(); closeEdit(); renderBoard(); toast("저장했어요.");
+    }
+    function deleteCard() {
+      const id = document.getElementById("ed_id").value;
+      if (!id || !confirm("이 콘텐츠를 삭제할까요?")) return;
+      state.items = state.items.filter(x=>x.id!==id);
+      save(); closeEdit(); renderBoard(); toast("삭제했어요.");
+    }
+    function itemText(i) {
+      return `[${i.channel} · ${i.type}] ${i.title}\n\n훅: ${i.hook||""}\n\n${i.body||""}\n\nCTA: ${i.cta||""}`;
+    }
+    async function copyItem(id) { const i = state.items.find(x=>x.id===id); if(i) await clip(itemText(i)); }
+    async function copyCardText() {
+      const i = {
+        title: document.getElementById("ed_title").value, channel: document.getElementById("ed_channel").value,
+        type: document.getElementById("ed_type").value, hook: document.getElementById("ed_hook").value,
+        body: document.getElementById("ed_body").value, cta: document.getElementById("ed_cta").value
+      };
+      await clip(itemText(i));
+    }
 
-브랜드 설명:
-브랜드명: ${brand.name}
-슬로건: ${brand.slogan}
-한 줄 소개: ${brand.oneLine}
-핵심 강점: ${brand.strengths}
-포지셔닝: ${brand.positioning}
-핵심 메시지: ${brand.coreMessage}
-광고 첫 문장: ${brand.openingLine}
+    /* ---------- 콘텐츠 만들기 ---------- */
+    function renderChanPick() {
+      document.getElementById("chanPick").innerHTML = CHANNELS.map((c,idx) => `
+        <label style="border-color:${c.color}">
+          <input type="radio" name="mkChan" value="${esc(c.id)}" ${idx===0?"checked":""} onchange="syncMakeTypes()">
+          <span class="em">${c.emoji}</span>
+          <span>${esc(c.id)}</span>
+          <small>${esc(c.desc)}</small>
+        </label>`).join("");
+      syncMakeTypes();
+    }
+    function makeChannel() { return document.querySelector('input[name="mkChan"]:checked')?.value || CHANNELS[0].id; }
+    function syncMakeTypes() { fillSel("mkType", TYPES[makeChannel()] || ["콘텐츠"]); highlightChan(); if (topicsShown) suggestTopics(false); }
 
-생성 유형: ${typeLabel}
+    /* ---------- 주제 자동 추천 ---------- */
+    function rankedTopics(channel) {
+      const mo = today.getMonth() + 1;
+      return TOPIC_BANK
+        .map(x => ({ t: x.t, s: (x.ch?.includes(channel) ? 2 : 0) + ((x.mo || []).includes(mo) ? 1 : 0) }))
+        .sort((a, b) => b.s - a.s)
+        .map(o => o.t);
+    }
+    function renderTopicChips(list, ai) {
+      document.getElementById("topicChips").innerHTML = list.map(t =>
+        `<button type="button" class="topic-chip ${ai ? "ai" : ""}" onclick="pickTopic(this)">${esc(t)}</button>`).join("");
+    }
+    function suggestTopics(more) {
+      const ranked = rankedTopics(makeChannel());
+      topicCursor = more ? (topicCursor + 6) % ranked.length : 0;
+      const pick = [];
+      for (let k = 0; k < 6 && k < ranked.length; k++) pick.push(ranked[(topicCursor + k) % ranked.length]);
+      renderTopicChips(pick, false);
+      topicsShown = true;
+      document.getElementById("topicMoreBtn").style.display = "";
+      document.getElementById("aiTopicBtn").style.display = "";
+    }
+    function pickTopic(el) {
+      document.getElementById("mkTopic").value = el.textContent;
+      document.getElementById("mkTopic").focus();
+      checkDuplicate();
+      toast("주제를 넣었어요. 바로 생성해보세요.");
+    }
+    async function aiTopics() {
+      const channel = makeChannel();
+      const target = document.getElementById("mkTarget").value.trim() || "고1·고2 학부모";
+      const prompt = `너는 에바연(학생부 설계실)의 마케팅 콘텐츠 기획자다.
+포지셔닝: 세특 주제만 찾지 말고 내 생기부의 빈틈을 먼저 무료 진단하라는 메시지.
+채널: ${channel} / 타깃: ${target}
+이 채널·타깃에 맞는 콘텐츠 주제(제목 후보) 10개를 제안해라. 과장된 합격 보장 표현 금지, 한국어.
+출력은 JSON 배열만. 예: ["주제1","주제2", ...]`;
+      const s = loadClaude();
+      if (!s.apiKey) {
+        if (confirm("API 키가 없어요. 주제 생성 프롬프트를 복사해서 claude.ai에 붙여 쓸까요?")) await clip(prompt);
+        return;
+      }
+      const btn = document.getElementById("aiTopicBtn");
+      const label = btn.textContent;
+      btn.disabled = true; btn.textContent = "생성 중...";
+      try {
+        const r = await fetch("https://api.anthropic.com/v1/messages", {
+          method: "POST",
+          headers: { "content-type":"application/json", "x-api-key": s.apiKey, "anthropic-version":"2023-06-01", "anthropic-dangerous-direct-browser-access":"true" },
+          body: JSON.stringify({ model: s.model||"claude-sonnet-4-5", max_tokens: 900, messages: [{ role:"user", content: prompt }] })
+        });
+        const data = await r.json();
+        if (!r.ok) throw new Error(data?.error?.message || `오류 ${r.status}`);
+        const text = (data.content||[]).map(p=>p.text||"").join("\n").trim();
+        let list;
+        try { list = JSON.parse(text.replace(/^```json/i,"").replace(/^```/,"").replace(/```$/i,"").trim()); }
+        catch (e) { list = text.split("\n").map(l=>l.replace(/^[-\d.\s"]+/,"").replace(/"$/,"").trim()).filter(Boolean); }
+        renderTopicChips((list||[]).slice(0,10), true);
+        topicsShown = true;
+        document.getElementById("topicMoreBtn").style.display = "";
+        toast("Claude가 새 주제 10개를 제안했어요.");
+      } catch (e) {
+        toast("주제 생성 실패: " + e.message);
+      } finally {
+        btn.disabled = false; btn.textContent = label;
+      }
+    }
+    function highlightChan() {
+      document.querySelectorAll('#chanPick label').forEach(l => {
+        const checked = l.querySelector('input').checked;
+        l.style.background = checked ? "#fff6f2" : "#fff";
+        l.style.boxShadow = checked ? "0 0 0 3px rgba(232,113,78,.15)" : "none";
+      });
+    }
+
+    function buildPrompt() {
+      const channel = makeChannel();
+      const type = document.getElementById("mkType").value;
+      const target = document.getElementById("mkTarget").value.trim();
+      const topic = document.getElementById("mkTopic").value.trim();
+      const extra = document.getElementById("mkExtra").value.trim();
+      const b = state.brand;
+      const tip = state.channelTips.find(t=>t.channel===channel) || {};
+
+      const channelRule = {
+        "블로그": "네이버 블로그 SEO 글. 제목에 검색어를 자연스럽게 넣고, 첫 문단에서 문제를 제기한 뒤 본문→체크리스트→무료 진단 CTA 순서로. 정보량과 전문성으로 신뢰를 준다.",
+        "인스타그램": type.includes("릴스")
+          ? "인스타 릴스 대본. 0~3초 강한 훅, 4~20초 문제 공감, 21~35초 해결 방향, 36~45초 CTA. 자막용 짧은 문장."
+          : "인스타 카드뉴스 5장 구성. 1장 훅 / 2장 문제 / 3장 비교(단순 자료 추천 vs 진단 기반 설계) / 4장 해결 / 5장 무료 진단 CTA. 각 장은 한두 문장.",
+        "카카오채널": "카카오 채널 발송 메시지. 친근한 말투로 짧게. 첫 줄에서 혜택을 말하고, 무료 자료·진단 링크로 자연스럽게 연결. 너무 광고 같지 않게.",
+        "유튜브": type.includes("롱폼")
+          ? "유튜브 롱폼 영상 개요. 후킹 인트로 → 핵심 3파트 → 사례 → 정리/CTA 구조로 섹션별 요점."
+          : "유튜브 쇼츠 45초 대본. 0~3초 훅, 4~20초 문제, 21~35초 해결(진단→추천 자료→설계→플래너), 36~45초 CTA. 말하듯이."
+      }[channel];
+
+      return `너는 에바연(에듀케레 바른교육연구소)의 입시·학생부 마케팅 콘텐츠 디렉터다.
+
+[브랜드]
+한 줄 소개: 진단 → 추천 탐구자료 → 탐구 설계 → 주간 플래너로 이어지는 학생부 설계실
+핵심 메시지: ${b.core}
+광고 첫 문장 톤: ${b.opening}
+포지셔닝: ${b.positioning}
+
+[이번 콘텐츠]
 채널: ${channel}
-타깃: ${target}
-캠페인: ${campaign ? campaign.name : "미분류"}
-캠페인 목표: ${campaign ? campaign.objective : ""}
-캠페인 오퍼: ${campaign ? campaign.offer : ""}
+형식: ${type}
+타깃: ${target || "고1·고2 학부모"}
+채널 목적: ${tip.purpose || ""} / 권장 주기: ${tip.cadence || ""}
+주제: ${topic || "(주제를 자유롭게 잡아도 됨)"}
 
-요청 내용:
-${brief}
+[채널 작성 규칙]
+${channelRule}
 
-반드시 반영할 소재:
-${extra}
+[꼭 반영]
+${extra || "(없음)"}
 
-경쟁사 참고:
-${competitors}
+[원칙]
+1. 과장된 합격 보장 표현 금지.
+2. 학부모·학생이 5초 안에 이해하도록 첫 문장을 선명하게.
+3. CTA는 무료 진단/무료 자료로 자연스럽게 연결.
+4. 단순 자료 추천보다 진단→실행→기록의 연결성을 강조.
+5. 한국어로 작성.
 
-타깃 고객 참고:
-${targetGuide}
-
-USP 참고:
-${uspGuide}
-
-카피뱅크 참고:
-${copyGuide}
-
-실행전략 참고:
-${strategyGuide}
-
-작성 원칙:
-1. 과장된 합격 보장 표현은 쓰지 않는다.
-2. 학부모가 5초 안에 이해할 수 있게 첫 문장을 선명하게 쓴다.
-3. CTA는 무료 진단으로 이어지게 한다.
-4. 단순 자료 추천보다 진단→실행→기록 연결성을 강조한다.
-5. 한국어로 작성한다.
-
-출력 형식:
-아래 JSON만 반환해라. 코드블록은 쓰지 마라.
+[출력] 아래 JSON만 반환. 코드블록 금지.
 {
   "title": "콘텐츠 제목",
-  "hook": "첫 문장 또는 광고 훅",
-  "body": "콘텐츠 구성 또는 본문 초안",
+  "hook": "첫 문장/훅",
+  "body": "본문 또는 장별 구성",
   "cta": "CTA 문구",
-  "target": "타깃",
-  "goal": "전환 목표",
-  "notes": "제작 메모",
-  "variants": ["대안 문구 1", "대안 문구 2", "대안 문구 3"]
+  "variants": ["대안 훅 1", "대안 훅 2"]
 }`;
     }
 
     async function generateWithClaude() {
-      const settings = loadClaudeSettings();
-      lastAiDraft = null;
-      if (!settings.apiKey) {
-        alert("먼저 Claude API 키를 입력하고 설정 저장을 눌러주세요.");
+      const s = loadClaude();
+      lastDraft = null;
+      if (!s.apiKey) {
+        if (confirm("API 키가 없어요. 대신 프롬프트를 복사해서 claude.ai에 붙여 쓸까요?\n(취소를 누르면 설정에서 키를 입력하세요)")) {
+          await clip(buildPrompt()); return;
+        }
+        document.querySelector("details.api").open = true;
         document.getElementById("claudeKey").focus();
         return;
       }
-      const button = document.getElementById("generateButton");
-      button.disabled = true;
-      button.textContent = "생성 중...";
-      document.getElementById("aiResult").textContent = "Claude가 콘텐츠를 생성하고 있습니다...";
+      const btn = document.getElementById("genBtn");
+      btn.disabled = true; btn.textContent = "생성 중...";
+      document.getElementById("aiResult").textContent = "Claude가 콘텐츠를 만들고 있어요...";
       try {
-        const response = await fetch("https://api.anthropic.com/v1/messages", {
+        const r = await fetch("https://api.anthropic.com/v1/messages", {
           method: "POST",
-          headers: {
-            "content-type": "application/json",
-            "x-api-key": settings.apiKey,
-            "anthropic-version": "2023-06-01",
-            "anthropic-dangerous-direct-browser-access": "true"
-          },
-          body: JSON.stringify({
-            model: settings.model || "claude-sonnet-4-5",
-            max_tokens: Number(settings.maxTokens || 2200),
-            temperature: Number(settings.temperature ?? 0.7),
-            messages: [{ role: "user", content: makeClaudePrompt() }]
-          })
+          headers: { "content-type":"application/json", "x-api-key": s.apiKey, "anthropic-version":"2023-06-01", "anthropic-dangerous-direct-browser-access":"true" },
+          body: JSON.stringify({ model: s.model||"claude-sonnet-4-5", max_tokens: Number(s.maxTokens||2200), messages: [{ role:"user", content: buildPrompt() }] })
         });
-        const data = await response.json();
-        if (!response.ok) {
-          throw new Error(data?.error?.message || `Claude API 오류: ${response.status}`);
-        }
-        const text = (data.content || []).map(part => part.text || "").join("\n").trim();
-        lastAiDraft = parseAiDraft(text);
-        document.getElementById("aiResult").textContent = formatAiDraft(lastAiDraft, text);
-        toast("Claude 생성이 완료되었습니다.");
-      } catch (error) {
-        document.getElementById("aiResult").textContent = `생성 실패: ${error.message}\n\nAPI 키, 모델명, 브라우저 네트워크 허용 상태를 확인하세요.`;
-        lastAiDraft = null;
+        const data = await r.json();
+        if (!r.ok) throw new Error(data?.error?.message || `오류 ${r.status}`);
+        const text = (data.content||[]).map(p=>p.text||"").join("\n").trim();
+        lastDraft = parseDraft(text);
+        document.getElementById("aiResult").textContent = formatDraft(lastDraft, text);
+        toast("생성 완료! ‘이번 주 보드에 저장’을 눌러보세요.");
+      } catch (e) {
+        document.getElementById("aiResult").textContent = `생성 실패: ${e.message}\n\nAPI 키·모델명·네트워크를 확인하세요.`;
       } finally {
-        button.disabled = false;
-        button.textContent = "생성하기";
+        btn.disabled = false; btn.textContent = "✦ Claude로 생성하기";
       }
     }
-
-    function parseAiDraft(text) {
+    function parseDraft(text) {
       try {
-        const cleaned = text.replace(/^```json/i, "").replace(/^```/, "").replace(/```$/i, "").trim();
-        return JSON.parse(cleaned);
-      } catch (error) {
-        return { title: "Claude 생성 콘텐츠", hook: "", body: text, cta: "무료 진단으로 시작", target: document.getElementById("aiTarget").value, goal: "무료 진단 클릭", notes: "JSON 파싱 실패: 원문을 본문으로 저장", variants: [] };
+        const c = text.replace(/^```json/i,"").replace(/^```/,"").replace(/```$/i,"").trim();
+        return JSON.parse(c);
+      } catch (e) {
+        return { title:"Claude 생성 콘텐츠", hook:"", body:text, cta:"무료 진단으로 시작", variants:[] };
       }
     }
-    function formatAiDraft(draft, raw) {
-      if (!draft || !draft.title) return raw || "";
-      const variants = Array.isArray(draft.variants) && draft.variants.length ? `\n\n대안 문구\n${draft.variants.map((item, index) => `${index + 1}. ${item}`).join("\n")}` : "";
-      return `제목: ${draft.title}
-
-첫 문장/훅:
-${draft.hook || ""}
-
-본문/구성:
-${draft.body || ""}
-
-CTA:
-${draft.cta || ""}
-
-타깃: ${draft.target || ""}
-목표: ${draft.goal || ""}
-
-제작 메모:
-${draft.notes || ""}${variants}`;
+    function formatDraft(d, raw) {
+      if (!d || !d.title) return raw || "";
+      const v = Array.isArray(d.variants)&&d.variants.length ? `\n\n[대안 훅]\n${d.variants.map((x,i)=>`${i+1}. ${x}`).join("\n")}` : "";
+      return `제목: ${d.title}\n\n훅:\n${d.hook||""}\n\n본문/구성:\n${d.body||""}\n\nCTA: ${d.cta||""}${v}`;
     }
-    async function generateAndSaveWithClaude() {
-      await generateWithClaude();
-      if (lastAiDraft) saveAiAsContent("검토");
+
+    function genForItem(id) {
+      const i = state.items.find(x=>x.id===id); if(!i) return;
+      pendingItemId = id;
+      setView("make");
+      const radio = document.querySelector(`input[name="mkChan"][value="${i.channel}"]`);
+      if (radio) { radio.checked = true; syncMakeTypes(); }
+      if (TYPES[i.channel]?.includes(i.type)) document.getElementById("mkType").value = i.type;
+      document.getElementById("mkTopic").value = i.title + (i.hook ? ` / ${i.hook}` : "");
+      toast("이 카드용으로 채웠어요. 생성하면 카드에 바로 반영됩니다.");
     }
-    function saveAiAsContent(statusOverride = "기획") {
-      if (!lastAiDraft) {
-        alert("먼저 Claude로 콘텐츠를 생성해주세요.");
-        return;
+
+    function saveDraftToBoard() {
+      if (!lastDraft) { alert("먼저 Claude로 생성해주세요."); return; }
+      const channel = makeChannel();
+      const type = document.getElementById("mkType").value;
+      const dup = findSimilar(lastDraft.title || "");
+      if (dup.length && !confirm(`비슷한 주제를 이미 발행했어요:\n- ${dup.map(i=>`${dlabel(histDate(i))} ${i.channel} · ${i.title}`).join("\n- ")}\n\n그래도 저장할까요?`)) return;
+      if (pendingItemId) {
+        const i = state.items.find(x=>x.id===pendingItemId);
+        if (i) {
+          i.title = lastDraft.title || i.title;
+          i.hook = lastDraft.hook || i.hook;
+          i.body = lastDraft.body || i.body;
+          i.cta = lastDraft.cta || i.cta;
+          i.status = "초안";
+          save(); pendingItemId = null;
+          toast("카드에 반영했어요."); setView("board"); return;
+        }
       }
-      const channel = document.getElementById("aiChannel").value;
-      const type = document.getElementById("aiType").value;
-      const formatMap = { topic: "블로그 글", card: "카드뉴스", reel: "릴스", blog: "블로그 글", ad: "검색광고", cta: "문자" };
-      const item = {
-        id: `item-${Date.now()}`,
-        title: lastAiDraft.title || "Claude 생성 콘텐츠",
-        channel,
-        format: formatMap[type] || "블로그 글",
-        dueDate: addDays(3),
-        status: statusOverride,
-        campaignId: document.getElementById("aiCampaign").value,
-        priority: "중간",
-        target: lastAiDraft.target || document.getElementById("aiTarget").value,
-        goal: lastAiDraft.goal || "무료 진단 클릭",
-        hook: lastAiDraft.hook || "",
-        body: lastAiDraft.body || document.getElementById("aiResult").textContent,
-        cta: lastAiDraft.cta || "무료 진단으로 시작",
-        budget: 0,
-        notes: [lastAiDraft.notes || "", Array.isArray(lastAiDraft.variants) ? `대안 문구: ${lastAiDraft.variants.join(" / ")}` : ""].filter(Boolean).join("\n")
-      };
-      state.items.push(item);
-      saveState();
-      activeStatus = statusOverride;
-      renderAll();
-      toast(`생성 결과를 ${statusOverride} 상태로 저장했습니다.`);
-      setView("content");
+      state.items.push({
+        id: uid(), title: lastDraft.title||"Claude 생성 콘텐츠", channel, type,
+        due: addDays(3), status: "초안", hook: lastDraft.hook||"",
+        body: lastDraft.body||"", cta: lastDraft.cta||"무료 진단으로 시작"
+      });
+      save(); toast("이번 주 보드에 저장했어요."); setView("board");
     }
-    async function copyAiResult() {
-      const text = document.getElementById("aiResult").textContent;
+    async function copyPromptOnly() { await clip(buildPrompt()); }
+    async function copyAiResult() { await clip(document.getElementById("aiResult").textContent); }
+    function clearAiResult() { lastDraft = null; pendingItemId = null; document.getElementById("aiResult").textContent = "여기에 생성 결과가 나옵니다."; }
+
+    /* ---------- 자료실 ---------- */
+    function renderLibrary() {
+      const b = state.brand;
+      document.getElementById("libQuote").innerHTML = `${esc(b.opening)}<small>핵심 메시지 · ${esc(b.core)}</small>`;
+
+      document.getElementById("libChannels").innerHTML = state.channelTips.map(t => {
+        const c = CHANNELS.find(x=>x.id===t.channel) || {};
+        return `<div class="tip-row">
+          <b>${c.emoji||""} ${esc(t.channel)}</b>
+          <div><b>${esc(t.purpose)}</b> · ${esc(t.format)}<br>
+          <span style="color:var(--green2);font-weight:800">“${esc(t.message)}”</span> · ${esc(t.cadence)}</div>
+        </div>`;
+      }).join("");
+
+      document.getElementById("libCopy").innerHTML = state.copyBank.map((c,idx) => `
+        <div class="lib-card">
+          <span class="tag" style="background:var(--green2)">${esc(c.type)}</span>
+          <h4>${esc(c.headline)}</h4>
+          <p>${esc(c.body)}</p>
+          <div class="cta">CTA · ${esc(c.cta)}</div>
+          <button class="btn sm copybtn" type="button" onclick="copyCopy(${idx})">소재로 복사</button>
+        </div>`).join("");
+
+      document.getElementById("libCompetitors").innerHTML = state.competitors.map(c => `
+        <div class="tip-row">
+          <b>${esc(c.name)}</b>
+          <div>잘하는 것: ${esc(c.focus)}<br><span style="color:var(--coral);font-weight:800">→ 에바연: ${esc(c.reply)}</span></div>
+        </div>`).join("");
+    }
+    async function copyCopy(idx) {
+      const c = state.copyBank[idx];
+      await clip(`헤드라인: ${c.headline}\n본문: ${c.body}\nCTA: ${c.cta}`);
+    }
+
+    /* ---------- 내보내기 ---------- */
+    function uploadChecklist(channel) {
+      if (channel === "블로그") return ["제목에 핵심 검색어 포함","첫 문단 문제 제기","본문 중간 체크리스트","마지막 무료 진단 CTA","발행 후 유입 검색어 기록"];
+      if (channel === "인스타그램") return ["1장 훅 확정","문제·비교·해결·CTA 순서","해시태그 추가","프로필 링크 확인","저장·공유 반응 기록"];
+      if (channel === "카카오채널") return ["수신 대상 확인","첫 줄 혜택 명확","무료 자료/진단 링크","발송 시간 예약","문의 응답 메모"];
+      if (channel === "유튜브") return ["0~3초 훅 녹화","45초 안에 문제·해결","자막에 CTA","설명란 링크","조회 유지율 메모"];
+      return ["원고 확인","CTA 링크 확인","발행 후 성과 메모"];
+    }
+    function weekItems() {
+      const active = state.items.filter(i=>i.status!=="발행");
+      let list = active.filter(i => dayDiff(i.due)>=0 && dayDiff(i.due)<=7);
+      if (!list.length) list = active.slice(0,8);
+      return list.sort((a,b)=>(a.due||"").localeCompare(b.due||""));
+    }
+    function buildExecDoc() {
+      const items = weekItems();
+      const b = state.brand;
+      const gen = new Date().toLocaleString("ko-KR");
+      const body = items.map((i,idx) => `
+        <section class="it">
+          <h2>${idx+1}. ${esc(i.title)}</h2>
+          <table>
+            <tr><th>채널</th><td>${esc(i.channel)} · ${esc(i.type)}</td><th>올릴 날</th><td>${esc(i.due||"-")}</td></tr>
+            <tr><th>상태</th><td>${esc(i.status)}</td><th>CTA</th><td>${esc(i.cta||"-")}</td></tr>
+          </table>
+          <h3>첫 문장 / 훅</h3><p class="copy">${esc(i.hook||"").replace(/\n/g,"<br>")}</p>
+          <h3>본문 / 구성</h3><p class="copy">${esc(i.body||"").replace(/\n/g,"<br>")}</p>
+          <h3>업로드 체크리스트</h3><ul>${uploadChecklist(i.channel).map(s=>`<li>${esc(s)}</li>`).join("")}</ul>
+          <p class="memo">수정 메모 / 업로드 링크 / 성과:</p>
+        </section>`).join("");
+      return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>이번 주 마케팅 실행팩</title>
+        <style>body{font-family:"Malgun Gothic",sans-serif;color:#172033;line-height:1.65}
+        h1{color:#11203f;font-size:24px}h2{color:#11203f;font-size:18px;border-top:1px solid #e3ddd0;padding-top:14px;margin-top:24px}
+        h3{color:#22483f;font-size:14px;margin:12px 0 5px}.meta{color:#6b7689;font-size:12px}
+        .summary{background:#fbf8f1;border:1px solid #e3ddd0;padding:12px;margin:14px 0}
+        table{width:100%;border-collapse:collapse;margin:8px 0}th,td{border:1px solid #e3ddd0;padding:7px;font-size:12px;text-align:left}th{background:#f6f1e8;width:90px}
+        .copy{border:1px solid #e3ddd0;padding:10px;background:#fff}.memo{border:1px dashed #b9b2a6;min-height:70px;padding:10px;color:#6b7689}
+        .it{page-break-inside:avoid}</style></head><body>
+        <h1>이번 주 마케팅 실행팩</h1>
+        <p class="meta">생성일 ${esc(gen)} · 목표: ${esc(state.weekGoal||"")}</p>
+        <div class="summary"><b>핵심 메시지</b><p>${esc(b.core)}</p></div>
+        ${body || "<p>이번 주 올릴 콘텐츠가 없습니다.</p>"}
+        </body></html>`;
+    }
+    function dl(html, name, type) {
+      const blob = new Blob(["﻿", html], { type });
+      const u = URL.createObjectURL(blob);
+      const a = document.createElement("a"); a.href = u; a.download = name; a.click();
+      URL.revokeObjectURL(u);
+    }
+    function exportWordPack() {
+      dl(buildExecDoc(), `에바연_이번주_실행팩_${iso(today)}.doc`, "application/msword;charset=utf-8");
+      toast("주간 실행팩 Word를 받았어요.");
+      const m = document.getElementById("menuDialog"); if (m.open) m.close();
+    }
+    /* ---------- 발행 기록 → 엑셀 ---------- */
+    function historyRows() {
+      const header = ["발행일", "채널", "형식", "제목", "훅", "CTA", "본문"];
+      const rows = publishedList()
+        .sort((a,b) => histDate(b).localeCompare(histDate(a)))
+        .map(i => [histDate(i), i.channel, i.type||"", i.title||"",
+          (i.hook||"").replace(/\s*\n\s*/g," "), i.cta||"", (i.body||"").replace(/\s*\n\s*/g," ")]);
+      return [header, ...rows];
+    }
+    async function copyHistoryTSV() {
+      const rows = historyRows();
+      if (rows.length < 2) { toast("내보낼 발행 기록이 없어요."); return; }
+      const tsv = rows.map(r => r.map(c => String(c).replace(/[\t\r\n]+/g," ")).join("\t")).join("\n");
       try {
-        await navigator.clipboard.writeText(text);
-        toast("결과를 복사했습니다.");
-      } catch (error) {
-        alert("복사에 실패했습니다. 결과 영역의 텍스트를 직접 선택해 복사해주세요.");
-      }
+        await navigator.clipboard.writeText(tsv);
+        toast(`발행 기록 ${rows.length-1}건 복사! 마케팅시트.xlsx의 ‘발행완료’ 시트 A1을 클릭하고 Ctrl+V 하세요.`);
+      } catch (e) { alert("복사 실패. 화면의 표를 직접 선택해 복사하세요."); }
     }
-    function clearAiResult() {
-      lastAiDraft = null;
-      document.getElementById("aiResult").textContent = "생성 결과가 여기에 표시됩니다.";
+    function csvCell(v) { const s = String(v ?? ""); return /[",\n\r]/.test(s) ? '"'+s.replace(/"/g,'""')+'"' : s; }
+    function exportHistoryCsv() {
+      const rows = historyRows();
+      if (rows.length < 2) { toast("내보낼 발행 기록이 없어요."); return; }
+      const csv = rows.map(r => r.map(csvCell).join(",")).join("\r\n");
+      dl(csv, `에바연_발행기록_${iso(today)}.csv`, "text/csv;charset=utf-8");
+      toast("발행 기록 CSV를 받았어요. 엑셀에서 열어 ‘발행완료’ 시트에 복사하세요.");
     }
 
     function exportJson() {
-      const blob = new Blob([JSON.stringify(state, null, 2)], { type: "application/json" });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `eva-marketing-manager-${iso(today)}.json`;
-      a.click();
-      URL.revokeObjectURL(url);
-      toast("JSON 파일을 내보냈습니다.");
+      dl(JSON.stringify(state,null,2), `에바연_마케팅_백업_${iso(today)}.json`, "application/json");
+      toast("백업 파일을 받았어요.");
     }
     function importJson(file) {
       if (!file) return;
-      const reader = new FileReader();
-      reader.onload = () => {
+      const r = new FileReader();
+      r.onload = () => {
         try {
-          const parsed = JSON.parse(reader.result);
-          if (!Array.isArray(parsed.items) || !Array.isArray(parsed.campaigns)) throw new Error("invalid");
-          state = normalizeState(parsed);
-          saveState();
-          renderAll();
-          toast("JSON 데이터를 불러왔습니다.");
-        } catch (error) {
-          alert("불러올 수 없는 JSON 파일입니다.");
-        }
+          const p = JSON.parse(r.result);
+          if (!Array.isArray(p.items)) throw new Error("invalid");
+          state = {
+            weekGoal: p.weekGoal || seed.weekGoal, brand: p.brand || seed.brand,
+            channelTips: p.channelTips || seed.channelTips, copyBank: p.copyBank || seed.copyBank,
+            competitors: p.competitors || seed.competitors, items: p.items
+          };
+          save(); renderBoard(); document.getElementById("menuDialog").close(); toast("백업을 불러왔어요.");
+        } catch (e) { alert("불러올 수 없는 파일이에요."); }
       };
-      reader.readAsText(file);
+      r.readAsText(file);
     }
-    function toast(message) {
-      const node = document.getElementById("toast");
-      node.textContent = message;
-      node.classList.add("show");
-      clearTimeout(window.__toastTimer);
-      window.__toastTimer = setTimeout(() => node.classList.remove("show"), 1800);
+    function resetAll() {
+      if (!confirm("모든 콘텐츠를 처음 예시 상태로 되돌릴까요? (백업은 따로 받아두세요)")) return;
+      state = structuredClone(seed); save(); renderBoard();
+      document.getElementById("menuDialog").close(); toast("처음 상태로 되돌렸어요.");
+    }
+    function openMenu() { document.getElementById("menuDialog").showModal(); }
+
+    /* ---------- 공통 ---------- */
+    async function clip(text) {
+      try { await navigator.clipboard.writeText(text); toast("복사했어요."); }
+      catch (e) { alert("복사 실패. 텍스트를 직접 선택해 복사하세요."); }
+    }
+    function toast(msg) {
+      const n = document.getElementById("toast");
+      n.textContent = msg; n.classList.add("show");
+      clearTimeout(window.__t); window.__t = setTimeout(()=>n.classList.remove("show"), 1800);
     }
 
-    document.querySelectorAll(".nav button").forEach(button => button.addEventListener("click", () => setView(button.dataset.view)));
-    document.getElementById("editorDialog").addEventListener("click", event => { if (event.target.id === "editorDialog") closeEditor(); });
-    clearCampaignForm();
-    hydrateClaudeSettings();
-    renderAll();
+    document.querySelectorAll(".nav button").forEach(b => b.addEventListener("click", () => setView(b.dataset.view)));
+    [editDialog, menuDialog].forEach(d => d.addEventListener("click", e => { if (e.target === d) d.close(); }));
+
+    hydrateClaude();
+    renderChanPick();
+    renderBoard();
   </script>
 </body>
 </html>
