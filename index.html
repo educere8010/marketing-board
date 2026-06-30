@@ -351,7 +351,8 @@ CTA: 무료 진단으로 현재 위치 확인</textarea>
           <div class="ai-result" id="aiResult">여기에 생성 결과가 나옵니다.</div>
           <div class="row-actions" style="margin-top:12px">
             <button class="btn dark" type="button" onclick="saveDraftToBoard()">이번 주 보드에 저장</button>
-            <button class="btn" type="button" onclick="copyAiResult()">결과 복사</button>
+            <button class="btn primary" type="button" onclick="copyCleanDraft()">📋 붙여넣기용 복사</button>
+            <button class="btn" type="button" onclick="copyAiResult()">전체 복사</button>
             <button class="btn" type="button" onclick="clearAiResult()">비우기</button>
           </div>
 
@@ -1063,12 +1064,13 @@ ${extra || "(없음)"}
       }
     }
     function parseDraft(text) {
-      try {
-        const c = text.replace(/^```json/i,"").replace(/^```/,"").replace(/```$/i,"").trim();
-        return JSON.parse(c);
-      } catch (e) {
-        return { title:"Claude 생성 콘텐츠", hook:"", body:text, cta:"무료 진단으로 시작", variants:[] };
-      }
+      const t = text.replace(/^```json/i,"").replace(/^```/,"").replace(/```$/i,"").trim();
+      try { return JSON.parse(t); } catch (e) {}
+      // JSON 앞뒤에 설명이 섞여 있어도 본문 객체만 뽑아내기
+      const m = t.match(/\{[\s\S]*\}/);
+      if (m) { try { return JSON.parse(m[0]); } catch (e) {} }
+      // 그래도 안 되면 받은 글을 그대로 본문으로 (이미 한글 텍스트)
+      return { title:"Claude 생성 콘텐츠", hook:"", body:text.trim(), cta:"무료 진단으로 시작", variants:[] };
     }
     function formatDraft(d, raw) {
       if (!d || !d.title) return raw || "";
@@ -1114,6 +1116,19 @@ ${extra || "(없음)"}
     }
     async function copyPromptOnly() { await clip(buildPrompt()); }
     async function copyAiResult() { await clip(document.getElementById("aiResult").textContent); }
+    function cleanDraftText(d) {
+      const p = [];
+      if (d.title) p.push(d.title);
+      if (d.hook && d.hook !== d.title) p.push(d.hook);
+      if (d.body) p.push(d.body);
+      if (d.cta) p.push("👉 " + d.cta);
+      return p.join("\n\n");
+    }
+    async function copyCleanDraft() {
+      const txt = lastDraft ? cleanDraftText(lastDraft) : document.getElementById("aiResult").textContent;
+      if (!txt || txt.includes("여기에 생성 결과가 나옵니다")) { toast("먼저 콘텐츠를 생성해주세요."); return; }
+      await clip(txt);
+    }
     function clearAiResult() { lastDraft = null; pendingItemId = null; document.getElementById("aiResult").textContent = "여기에 생성 결과가 나옵니다."; }
 
     /* ---------- 자료실 ---------- */
