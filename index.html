@@ -233,6 +233,18 @@
     .tip-row:last-child { border-bottom: 0; }
     .tip-row b { color: var(--navy); }
 
+    .revenue-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+    .rev-card { border: 1px solid var(--line); border-radius: var(--r); background: #fff; padding: 14px; box-shadow: var(--shadow); }
+    .rev-card h3 { margin: 0 0 6px; color: var(--navy); font-size: 16px; }
+    .rev-card .big { color: var(--coral); font-size: 24px; font-weight: 950; margin: 10px 0 4px; }
+    .rev-card p, .rev-card small { color: var(--muted); font-size: 12px; line-height: 1.55; }
+    .rev-scroll { overflow: auto; border: 1px solid var(--line); border-radius: var(--r); background: #fff; }
+    .rev-table { width:100%; border-collapse: collapse; min-width: 860px; }
+    .rev-table th, .rev-table td { border-bottom:1px solid #efe8dc; padding: 10px; text-align:left; vertical-align:top; font-size: 12px; }
+    .rev-table th { color: var(--muted); background:#fbf8f1; font-weight:900; }
+    .rev-table input { width: 86px; border: 1px solid var(--line); border-radius: 8px; padding: 7px; }
+    .source-list { margin: 0; padding-left: 18px; color: var(--muted); font-size: 12px; line-height: 1.65; }
+
     /* 다이얼로그 */
     dialog { border: 0; border-radius: var(--r); padding: 0; width: min(620px, calc(100% - 28px));
       box-shadow: 0 30px 90px rgba(17,32,63,.24); }
@@ -248,6 +260,7 @@
       .board { grid-template-columns: repeat(2, 1fr); }
       .chan-pick { grid-template-columns: repeat(2, 1fr); }
       .lib-grid { grid-template-columns: 1fr; }
+      .revenue-grid { grid-template-columns: 1fr; }
       .nav button { padding: 0 12px; }
     }
     @media (max-width: 620px) {
@@ -273,6 +286,7 @@
     <nav class="nav">
       <button class="active" data-view="board" type="button">이번 주</button>
       <button data-view="make" type="button">콘텐츠 만들기</button>
+      <button data-view="revenue" type="button">매출 시나리오</button>
       <button data-view="history" type="button">발행 기록</button>
       <button data-view="library" type="button">자료실</button>
     </nav>
@@ -382,6 +396,66 @@ CTA: 무료 진단으로 현재 위치 확인</textarea>
               </div>
             </div>
           </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== 매출 시나리오 ========== -->
+    <section id="view-revenue" class="view hidden">
+      <div class="page-head">
+        <h1>경쟁 분석 기반 예상 매출 시나리오</h1>
+        <p>자료 단권 14,900원과 학생부 설계실 6개월 289,000원을 기준으로 방문자, 무료진단, 자료구매, 설계실 전환 매출을 따로 추정합니다.</p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">
+          <h2>경쟁사 가격·포지션 앵커</h2>
+          <p>정확한 경쟁사 매출이 아니라, 공개 상품 구조를 기준으로 에바연 가격대를 잡는 참고값입니다.</p>
+        </div>
+        <div class="panel-body">
+          <div class="revenue-grid" id="benchmarkCards"></div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:16px">
+        <div class="panel-head">
+          <h2>매출 시나리오 계산기</h2>
+          <div class="row-actions">
+            <button class="btn sm" type="button" onclick="resetRevenue()">기본값 복원</button>
+            <button class="btn sm dark" type="button" onclick="exportRevenueWord()">Word 보고서</button>
+          </div>
+        </div>
+        <div class="panel-body">
+          <div class="rev-scroll">
+            <table class="rev-table">
+              <thead>
+                <tr>
+                  <th>시나리오</th>
+                  <th>월 방문자</th>
+                  <th>무료진단 전환율</th>
+                  <th>자료구매율</th>
+                  <th>설계실전환율</th>
+                  <th>평균 자료권수</th>
+                  <th>광고비</th>
+                  <th>예상 판매</th>
+                  <th>월매출</th>
+                  <th>광고 후 매출</th>
+                </tr>
+              </thead>
+              <tbody id="revenueRows"></tbody>
+            </table>
+          </div>
+          <div id="revenueCards" class="revenue-grid" style="margin-top:14px"></div>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-top:16px">
+        <div class="panel-head">
+          <h2>해석과 실행 우선순위</h2>
+          <p>1인기업 기준으로 숫자를 키우는 순서입니다.</p>
+        </div>
+        <div class="panel-body">
+          <div id="revenueAdvice"></div>
         </div>
       </div>
     </section>
@@ -588,6 +662,18 @@ CTA: 무료 진단으로 현재 위치 확인</textarea>
         { name: "맞춤 컨설팅", focus: "데오럭스·아폴론. 1:1 프리미엄 신뢰", reply: "상담 1회보다 '한 학기 실행 관리' 강조" },
         { name: "자료 마켓", focus: "해피캠퍼스. 저가·자료량", reply: "다운로드가 아니라 '진단·플래너까지' 강조" }
       ],
+      benchmarks: [
+        { name: "AI/자료형 구독", price: "월 19,900원대", signal: "AI 탐구주제·세특카드·가이드처럼 낮은 가격으로 넓게 유입", implication: "에바연은 단순 주제 추천보다 높은 객단가를 받으려면 진단·플래너·기록 연결을 명확히 보여줘야 함" },
+        { name: "합격생 DB 열람", price: "연 39,900원대", signal: "실제 합격생 사례 열람이라는 증거 기반 신뢰", implication: "남의 사례 열람보다 내 생기부 진단과 실행 문서가 더 실용적이라는 메시지가 필요" },
+        { name: "에바연 탐구자료", price: "단권 14,900원", signal: "무료진단 후 바로 구매 가능한 낮은 진입 상품", implication: "광고 첫 전환은 무료진단, 첫 매출은 단권 자료, 핵심 매출은 설계실 전환으로 설계" },
+        { name: "에바연 학생부 설계실", price: "6개월 289,000원", signal: "진단·탐구자료·설계·플래너를 묶는 핵심 상품", implication: "매출 시나리오는 자료 객단가가 아니라 설계실 전환율을 중심으로 봐야 함" },
+        { name: "프리미엄 컨설팅", price: "고가 1:1 상담형", signal: "전문가 신뢰와 맞춤 관리를 판매", implication: "1인 운영 초기에는 고가 컨설팅을 정면 경쟁하기보다 합리적 비용의 반복 관리로 포지셔닝" }
+      ],
+      revenueScenarios: [
+        { name: "보수", visitors: 1500, leadRate: 6, materialRate: 12, studioRate: 2, materialUnits: 1.2, adCost: 300000, note: "블로그·카카오 중심, 단권 자료로 첫 매출 확인" },
+        { name: "기준", visitors: 4000, leadRate: 9, materialRate: 18, studioRate: 5, materialUnits: 1.5, adCost: 700000, note: "검색광고+무료진단+자료구매+설계실 전환이 안정화" },
+        { name: "공격", visitors: 9000, leadRate: 12, materialRate: 25, studioRate: 8, materialUnits: 1.8, adCost: 1500000, note: "광고와 콘텐츠가 동시에 돌아가고 후기/사례가 쌓인 상태" }
+      ],
       items: [
         { id: "it-s1", title: "세특 주제 찾기 전, 무료 진단부터 하라는 블로그 글", channel: "블로그", type: "블로그 글", due: addDays(1), status: "초안", hook: "고2 생기부는 활동 수보다 '연결성'이 먼저입니다.", body: "선택과목·탐구·독서가 희망학과 기준으로 이어지는지 점검하는 글. 마지막에 무료 진단 CTA.", cta: "무료 진단으로 현재 위치 확인" },
         { id: "it-s2", title: "세특 주제, 계열만 골라도 끝 — 카드뉴스", channel: "인스타그램", type: "카드뉴스", due: addDays(2), status: "할일", hook: "세특 주제, 계열만 골라도 끝", body: "1장 훅 / 2장 문제 / 3장 비교 / 4장 해결 / 5장 무료 진단 CTA", cta: "무료 주제 리스트 받기" },
@@ -601,6 +687,26 @@ CTA: 무료 진단으로 현재 위치 확인</textarea>
     let pendingItemId = null;   // 생성 결과를 특정 카드에 저장할 때
     let lastDraft = null;
 
+    function normalizeRevenueScenarios(rows) {
+      if (!Array.isArray(rows)) return structuredClone(seed.revenueScenarios);
+      return rows.map((row, idx) => {
+        const fallback = seed.revenueScenarios[idx] || seed.revenueScenarios[0];
+        return {
+          ...fallback,
+          ...row,
+          materialRate: Number.isFinite(Number(row.materialRate)) ? Number(row.materialRate) : fallback.materialRate,
+          studioRate: Number.isFinite(Number(row.studioRate)) ? Number(row.studioRate) : fallback.studioRate,
+          materialUnits: Number.isFinite(Number(row.materialUnits)) ? Number(row.materialUnits) : fallback.materialUnits
+        };
+      });
+    }
+    function normalizeBenchmarks(rows) {
+      if (!Array.isArray(rows)) return structuredClone(seed.benchmarks);
+      const hasEvaPrices = rows.some(row => String(row.name || "").includes("에바연 탐구자료"))
+        && rows.some(row => String(row.name || "").includes("학생부 설계실"));
+      return hasEvaPrices ? rows : structuredClone(seed.benchmarks);
+    }
+
     function load() {
       try {
         const raw = localStorage.getItem(STORE);
@@ -612,6 +718,8 @@ CTA: 무료 진단으로 현재 위치 확인</textarea>
           channelTips: Array.isArray(p.channelTips) ? p.channelTips : seed.channelTips,
           copyBank: Array.isArray(p.copyBank) ? p.copyBank : seed.copyBank,
           competitors: Array.isArray(p.competitors) ? p.competitors : seed.competitors,
+          benchmarks: normalizeBenchmarks(p.benchmarks),
+          revenueScenarios: normalizeRevenueScenarios(p.revenueScenarios),
           items: Array.isArray(p.items) ? p.items : seed.items
         };
       } catch (e) { return structuredClone(seed); }
@@ -655,6 +763,7 @@ CTA: 무료 진단으로 현재 위치 확인</textarea>
       document.getElementById(`view-${view}`).classList.remove("hidden");
       document.querySelectorAll(".nav button").forEach(b => b.classList.toggle("active", b.dataset.view === view));
       if (view === "board") renderBoard();
+      if (view === "revenue") renderRevenue();
       if (view === "history") renderHistory();
       if (view === "library") renderLibrary();
       window.scrollTo(0,0);
@@ -1165,6 +1274,85 @@ ${extra || "(없음)"}
       await clip(`헤드라인: ${c.headline}\n본문: ${c.body}\nCTA: ${c.cta}`);
     }
 
+    /* ---------- 매출 시나리오 ---------- */
+    const MATERIAL_PRICE = 14900;
+    const STUDIO_PRICE = 289000;
+    function money(v) { return `${Math.round(Number(v)||0).toLocaleString("ko-KR")}원`; }
+    function pct(v) { return `${Number(v||0).toFixed(1).replace(".0","")}%`; }
+    function calcScenario(s) {
+      const visitors = Number(s.visitors) || 0;
+      const leads = visitors * (Number(s.leadRate)||0) / 100;
+      const materialRate = Number(s.materialRate ?? s.paidRate ?? 0) || 0;
+      const studioRate = Number(s.studioRate ?? Math.max(0, (Number(s.paidRate)||0) - 2)) || 0;
+      const materialUnits = Number(s.materialUnits ?? 1) || 1;
+      const materialCustomers = leads * materialRate / 100;
+      const studioCustomers = leads * studioRate / 100;
+      const materialSales = materialCustomers * materialUnits;
+      const materialRevenue = materialSales * MATERIAL_PRICE;
+      const studioRevenue = studioCustomers * STUDIO_PRICE;
+      const revenue = materialRevenue + studioRevenue;
+      const net = revenue - (Number(s.adCost)||0);
+      return { visitors, leads, materialCustomers, studioCustomers, materialSales, materialRevenue, studioRevenue, revenue, net, annual: revenue * 12 };
+    }
+    function updateRevenue(idx, key, value) {
+      const n = Number(value);
+      state.revenueScenarios[idx][key] = Number.isFinite(n) ? n : value;
+      save();
+      renderRevenue();
+    }
+    function resetRevenue() {
+      state.benchmarks = structuredClone(seed.benchmarks);
+      state.revenueScenarios = structuredClone(seed.revenueScenarios);
+      save();
+      renderRevenue();
+      toast("매출 시나리오 기본값으로 복원했어요.");
+    }
+    function renderRevenue() {
+      const benchmarks = state.benchmarks || seed.benchmarks;
+      const scenarios = state.revenueScenarios || seed.revenueScenarios;
+      document.getElementById("benchmarkCards").innerHTML = benchmarks.map(b => `
+        <div class="rev-card">
+          <h3>${esc(b.name)}</h3>
+          <div class="big">${esc(b.price)}</div>
+          <p>${esc(b.signal)}</p>
+          <small><b>에바연 해석</b><br>${esc(b.implication)}</small>
+        </div>`).join("");
+
+      document.getElementById("revenueRows").innerHTML = scenarios.map((s, idx) => {
+        const c = calcScenario(s);
+        return `<tr>
+          <td><b>${esc(s.name)}</b><br><small>${esc(s.note||"")}</small></td>
+          <td><input type="number" value="${esc(s.visitors)}" onchange="updateRevenue(${idx},'visitors',this.value)"></td>
+          <td><input type="number" step="0.1" value="${esc(s.leadRate)}" onchange="updateRevenue(${idx},'leadRate',this.value)"></td>
+          <td><input type="number" step="0.1" value="${esc(s.materialRate ?? s.paidRate ?? 0)}" onchange="updateRevenue(${idx},'materialRate',this.value)"></td>
+          <td><input type="number" step="0.1" value="${esc(s.studioRate ?? 0)}" onchange="updateRevenue(${idx},'studioRate',this.value)"></td>
+          <td><input type="number" step="0.1" value="${esc(s.materialUnits ?? 1)}" onchange="updateRevenue(${idx},'materialUnits',this.value)"></td>
+          <td><input type="number" step="10000" value="${esc(s.adCost)}" onchange="updateRevenue(${idx},'adCost',this.value)"></td>
+          <td>자료 ${c.materialSales.toFixed(1)}권<br><small>설계실 ${c.studioCustomers.toFixed(1)}명 · 무료진단 ${Math.round(c.leads)}건</small></td>
+          <td><b>${money(c.revenue)}</b><br><small>자료 ${money(c.materialRevenue)} · 설계실 ${money(c.studioRevenue)}</small></td>
+          <td><b>${money(c.net)}</b></td>
+        </tr>`;
+      }).join("");
+
+      document.getElementById("revenueCards").innerHTML = scenarios.map(s => {
+        const c = calcScenario(s);
+        return `<div class="rev-card">
+          <h3>${esc(s.name)} 시나리오</h3>
+          <div class="big">${money(c.revenue)}</div>
+          <p>방문자 ${c.visitors.toLocaleString("ko-KR")}명 → 무료진단 ${Math.round(c.leads)}건 → 자료 ${c.materialSales.toFixed(1)}권 · 설계실 ${c.studioCustomers.toFixed(1)}명</p>
+          <small>광고비 제외 후 ${money(c.net)} · 단권 ${money(MATERIAL_PRICE)} · 설계실 ${money(STUDIO_PRICE)}</small>
+        </div>`;
+      }).join("");
+
+      const base = scenarios[1] || scenarios[0];
+      const bc = calcScenario(base);
+      document.getElementById("revenueAdvice").innerHTML = `
+        <div class="tip-row"><b>1단계</b><div>광고보다 먼저 무료진단 랜딩과 Word/PDF 실행팩을 정리하세요. 기준 시나리오는 월 무료진단 ${Math.round(bc.leads)}건을 필요로 합니다.</div></div>
+        <div class="tip-row"><b>2단계</b><div>단권 자료 ${money(MATERIAL_PRICE)}는 첫 결제 장벽을 낮추는 상품입니다. 하지만 월매출의 핵심은 설계실 ${money(STUDIO_PRICE)} 전환율입니다.</div></div>
+        <div class="tip-row"><b>3단계</b><div>기준 시나리오는 설계실 전환 ${pct(base.studioRate)}를 전제로 합니다. 진단 결과 화면에서 “6개월 설계실로 이어가기” 제안을 반드시 붙이세요.</div></div>
+        <div class="tip-row"><b>4단계</b><div>첫 4주는 보수 시나리오의 광고비로 테스트하고, 클릭률보다 무료진단 완료율과 유료전환율을 먼저 기록하세요.</div></div>`;
+    }
+
     /* ---------- 내보내기 ---------- */
     function uploadChecklist(channel) {
       if (channel === "블로그") return ["제목에 핵심 검색어 포함","첫 문단 문제 제기","본문 중간 체크리스트","마지막 무료 진단 CTA","발행 후 유입 검색어 기록"];
@@ -1220,6 +1408,42 @@ ${extra || "(없음)"}
       toast("주간 실행팩 Word를 받았어요.");
       const m = document.getElementById("menuDialog"); if (m.open) m.close();
     }
+    function buildRevenueDoc() {
+      const scenarios = state.revenueScenarios || seed.revenueScenarios;
+      const benchmarks = state.benchmarks || seed.benchmarks;
+      const rows = scenarios.map(s => {
+        const c = calcScenario(s);
+        return `<tr>
+          <td>${esc(s.name)}</td><td>${Number(s.visitors).toLocaleString("ko-KR")}명</td><td>${pct(s.leadRate)}</td>
+          <td>${pct(s.materialRate ?? s.paidRate ?? 0)}</td><td>${pct(s.studioRate ?? 0)}</td><td>${Number(s.materialUnits ?? 1).toFixed(1)}권</td>
+          <td>${Math.round(c.leads).toLocaleString("ko-KR")}건</td><td>${c.materialSales.toFixed(1)}권</td><td>${c.studioCustomers.toFixed(1)}명</td>
+          <td>${money(c.revenue)}<br><span>자료 ${money(c.materialRevenue)} / 설계실 ${money(c.studioRevenue)}</span></td><td>${money(c.net)}</td>
+        </tr>`;
+      }).join("");
+      const bench = benchmarks.map(b => `<li><b>${esc(b.name)}</b> · ${esc(b.price)}<br>${esc(b.signal)}<br><span>${esc(b.implication)}</span></li>`).join("");
+      return `<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>에바연 매출 시나리오</title>
+      <style>body{font-family:"Malgun Gothic",sans-serif;color:#172033;line-height:1.65}
+      h1{color:#11203f}h2{color:#22483f;font-size:18px;margin-top:24px}
+      table{width:100%;border-collapse:collapse}th,td{border:1px solid #e3ddd0;padding:8px;font-size:12px;text-align:left}th{background:#f6f1e8}
+      .box{background:#fbf8f1;border:1px solid #e3ddd0;padding:12px;margin:12px 0}li{margin-bottom:10px}span{color:#6b7689}</style></head><body>
+      <h1>에바연 경쟁분석 기반 예상 매출 시나리오</h1>
+      <p>생성일 ${esc(new Date().toLocaleString("ko-KR"))}</p>
+      <div class="box"><b>핵심 가정</b><p>자료 단권 ${money(MATERIAL_PRICE)}과 학생부 설계실 6개월 ${money(STUDIO_PRICE)}을 기준으로, 방문자 → 무료진단 → 자료구매 → 설계실 전환 매출을 나누어 추정합니다. 실제 매출 보장이 아니라 의사결정용 시나리오입니다.</p></div>
+      <h2>경쟁사 가격·포지션 앵커</h2><ul>${bench}</ul>
+      <h2>매출 시나리오</h2><table><thead><tr><th>구분</th><th>월 방문자</th><th>무료진단율</th><th>자료구매율</th><th>설계실전환율</th><th>평균 자료권수</th><th>무료진단</th><th>자료판매</th><th>설계실</th><th>월매출</th><th>광고 후</th></tr></thead><tbody>${rows}</tbody></table>
+      <h2>실행 우선순위</h2>
+      <ol><li>무료진단 랜딩을 먼저 확정하고, 모든 광고·블로그·카카오 CTA를 무료진단으로 통일합니다.</li>
+      <li>자료 단권은 첫 결제 장벽을 낮추는 입구 상품으로 쓰고, 핵심 매출은 6개월 학생부 설계실 전환으로 설계합니다.</li>
+      <li>진단 결과 후 “자료 1권 추천”과 “6개월 설계실로 이어가기”를 동시에 보여줘야 합니다.</li>
+      <li>첫 4주는 보수 시나리오 광고비로 테스트하고, 클릭보다 무료진단 완료율을 추적합니다.</li></ol>
+      <h2>참고 URL</h2>
+      <p>https://riroschool.kr/research<br>https://www.saenggibu.com/<br>https://hijinhak.jinhak.com/Performance/Topic/TopicFilter.aspx<br>https://hakjong-q.com/</p>
+      </body></html>`;
+    }
+    function exportRevenueWord() {
+      dl(buildRevenueDoc(), `에바연_매출시나리오_${iso(today)}.doc`, "application/msword;charset=utf-8");
+      toast("매출 시나리오 Word 보고서를 받았어요.");
+    }
     /* ---------- 발행 기록 → 엑셀 ---------- */
     function historyRows() {
       const header = ["발행일", "채널", "형식", "제목", "훅", "CTA", "본문"];
@@ -1261,7 +1485,10 @@ ${extra || "(없음)"}
           state = {
             weekGoal: p.weekGoal || seed.weekGoal, brand: p.brand || seed.brand,
             channelTips: p.channelTips || seed.channelTips, copyBank: p.copyBank || seed.copyBank,
-            competitors: p.competitors || seed.competitors, items: p.items
+            competitors: p.competitors || seed.competitors,
+            benchmarks: normalizeBenchmarks(p.benchmarks),
+            revenueScenarios: normalizeRevenueScenarios(p.revenueScenarios),
+            items: p.items
           };
           save(); renderBoard(); document.getElementById("menuDialog").close(); toast("백업을 불러왔어요.");
         } catch (e) { alert("불러올 수 없는 파일이에요."); }
