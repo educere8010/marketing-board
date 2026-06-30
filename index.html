@@ -417,6 +417,16 @@
               <button class="btn" type="button" onclick="setView('content')">전체 보기</button>
             </div>
             <div class="panel-body" id="upcomingList"></div>
+            <div class="panel-body" style="border-top:1px solid var(--line)">
+              <div class="panel-head" style="padding:0 0 12px;border:0">
+                <div>
+                  <h2>검토 대기 초안</h2>
+                  <p>자동 생산 후 사람이 확인하고 수정할 콘텐츠입니다.</p>
+                </div>
+                <button class="btn" type="button" onclick="showReviewQueue()">검토함 보기</button>
+              </div>
+              <div id="reviewQueue"></div>
+            </div>
           </section>
 
           <aside class="panel">
@@ -552,10 +562,37 @@ CTA: 무료 진단으로 현재 위치 확인
 경쟁사 대비 차별점: 단순 자료 추천이 아니라 진단→실행→기록까지 연결</textarea>
                 </div>
               </div>
+              <div class="hint" style="margin-top:12px">
+                <b>자동 초안 생산</b><br>
+                현재 선택한 캠페인·채널·타깃을 기준으로 광고기획 시트의 카피뱅크를 조합해 초안을 자동 저장합니다. 저장된 초안은 콘텐츠 작업판에서 열어 확인·수정할 수 있습니다.
+                <div class="form-grid" style="margin-top:10px">
+                  <div class="field">
+                    <label for="autoDraftCount">생산 개수</label>
+                    <input id="autoDraftCount" type="number" min="1" max="12" value="5">
+                  </div>
+                  <div class="field">
+                    <label for="autoDraftStatus">저장 상태</label>
+                    <select id="autoDraftStatus">
+                      <option value="검토">검토</option>
+                      <option value="기획">기획</option>
+                      <option value="제작">제작</option>
+                    </select>
+                  </div>
+                  <div class="field">
+                    <label for="autoDraftInterval">일정 간격</label>
+                    <input id="autoDraftInterval" type="number" min="1" max="14" value="2">
+                  </div>
+                  <div class="field">
+                    <label>실행</label>
+                    <button class="btn primary" type="button" onclick="autoProduceDrafts()">시트 기반 초안 자동 저장</button>
+                  </div>
+                </div>
+              </div>
               <div style="height:12px"></div>
               <div class="ai-result" id="aiResult">생성 결과가 여기에 표시됩니다.</div>
               <div class="row-actions" style="margin-top:12px">
                 <button class="btn primary" type="button" onclick="saveAiAsContent()">생성 결과를 콘텐츠로 저장</button>
+                <button class="btn coral" type="button" onclick="generateAndSaveWithClaude()">Claude 생성 후 바로 검토 저장</button>
                 <button class="btn" type="button" onclick="copyAiResult()">결과 복사</button>
                 <button class="btn ghost" type="button" onclick="clearAiResult()">비우기</button>
               </div>
@@ -1106,6 +1143,34 @@ CTA: 무료 진단으로 현재 위치 확인
               </tr>`).join("")}</tbody>
           </table>
         </div>` : `<div class="empty">다가오는 일정이 없습니다. 새 콘텐츠를 등록해 이번 주 계획을 잡아보세요.</div>`;
+      renderReviewQueue();
+    }
+
+    function renderReviewQueue() {
+      const root = document.getElementById("reviewQueue");
+      if (!root) return;
+      const drafts = state.items.filter(item => item.status === "검토").sort((a, b) => a.dueDate.localeCompare(b.dueDate)).slice(0, 5);
+      root.innerHTML = drafts.length ? `
+        <div class="campaign-list">
+          ${drafts.map(item => `
+            <article class="campaign">
+              <div class="campaign-top">
+                <div><h3>${escapeHtml(item.title)}</h3><p>${escapeHtml(item.hook || "")}</p></div>
+                <span class="pill ready">${escapeHtml(item.channel)}</span>
+              </div>
+              <p><b>마감</b> ${escapeHtml(item.dueDate)} · <b>CTA</b> ${escapeHtml(item.cta || "-")}</p>
+              <div class="row-actions" style="margin-top:10px">
+                <button class="mini" type="button" onclick="editItem('${item.id}')">확인·수정</button>
+                <button class="mini" type="button" onclick="advanceStatus('${item.id}')">제작으로 이동</button>
+              </div>
+            </article>
+          `).join("")}
+        </div>` : `<div class="empty">검토 대기 초안이 없습니다. Claude 생성실에서 자동 초안을 만들어보세요.</div>`;
+    }
+
+    function showReviewQueue() {
+      activeStatus = "검토";
+      setView("content");
     }
 
     function getFilteredItems() {
@@ -1363,6 +1428,99 @@ CTA: 무료 진단으로 현재 위치 확인
       document.getElementById("campaignStatus").value = "준비";
     }
 
+    function clampNumber(value, min, max, fallback) {
+      const number = Number(value);
+      if (!Number.isFinite(number)) return fallback;
+      return Math.min(max, Math.max(min, Math.round(number)));
+    }
+    function formatForChannel(channel) {
+      if (channel.includes("검색")) return "검색광고";
+      if (channel.includes("인스타")) return "카드뉴스";
+      if (channel.includes("쇼츠") || channel.includes("유튜브")) return "쇼츠";
+      if (channel.includes("블로그")) return "블로그 글";
+      if (channel.includes("카카오") || channel.includes("문자")) return "문자";
+      return "카드뉴스";
+    }
+    function bodyForAutoDraft(copy, channel, campaign, target, index) {
+      const brand = state.brandGuide || seedState.brandGuide;
+      if (channel.includes("검색")) {
+        return `제목안 ${index + 1}: ${copy.headline}
+설명: ${copy.body}
+확장 문구: ${brand.coreMessage}
+랜딩 방향: 무료 진단 페이지로 연결`;
+      }
+      if (channel.includes("블로그")) {
+        return `글 구성
+1. 검색자가 느끼는 문제: ${copy.headline}
+2. 흔한 해결 방식의 한계
+3. 에바연 해결책: ${campaign?.offer || brand.coreMessage}
+4. 체크리스트 3개
+5. CTA: ${copy.cta}`;
+      }
+      if (channel.includes("쇼츠") || channel.includes("유튜브")) {
+        return `0~3초 훅: ${copy.headline}
+4~20초 문제 상황: ${copy.body}
+21~35초 해결 방향: 진단 → 추천 탐구자료 → 탐구 설계 → 주간 플래너
+36~45초 CTA: ${copy.cta}`;
+      }
+      if (channel.includes("카카오") || channel.includes("문자")) {
+        return `${target || "학부모"}님, ${copy.headline}
+${copy.body}
+${copy.cta}`;
+      }
+      return `카드 구성
+1장 훅: ${copy.headline}
+2장 문제: ${copy.body}
+3장 비교: 단순 자료 추천 vs 진단 기반 설계
+4장 해결: ${campaign?.offer || brand.coreMessage}
+5장 CTA: ${copy.cta}`;
+    }
+    function autoProduceDrafts() {
+      const count = clampNumber(document.getElementById("autoDraftCount").value, 1, 12, 5);
+      const interval = clampNumber(document.getElementById("autoDraftInterval").value, 1, 14, 2);
+      const status = document.getElementById("autoDraftStatus").value || "검토";
+      const channel = document.getElementById("aiChannel").value || channels[0];
+      const campaignId = document.getElementById("aiCampaign").value || state.campaigns[0]?.id || "";
+      const campaign = state.campaigns.find(item => item.id === campaignId);
+      const target = document.getElementById("aiTarget").value.trim() || "고1·고2 학부모";
+      const format = formatForChannel(channel);
+      const startOffset = state.items.length;
+      const created = [];
+
+      for (let index = 0; index < count; index += 1) {
+        const copy = state.copyBank[(startOffset + index) % state.copyBank.length];
+        const item = {
+          id: `item-auto-${Date.now()}-${index}`,
+          title: `${copy.headline} ${format} 초안`,
+          channel,
+          format,
+          dueDate: addDays(1 + index * interval),
+          status,
+          campaignId,
+          priority: index < 2 ? "높음" : "중간",
+          target,
+          goal: campaign?.objective || "무료 진단 클릭",
+          hook: copy.headline,
+          body: bodyForAutoDraft(copy, channel, campaign, target, index),
+          cta: copy.cta || "무료 진단 시작",
+          budget: channel.includes("검색") ? 30000 : 0,
+          notes: `자동 생산 초안 · 원천: 광고기획 시트 카피뱅크 / 캠페인: ${campaign?.name || "미분류"}`
+        };
+        state.items.push(item);
+        created.push(item);
+      }
+
+      saveState();
+      activeStatus = status;
+      renderAll();
+      document.getElementById("aiResult").textContent = created.map((item, index) => `${index + 1}. ${item.title}
+채널: ${item.channel} / 상태: ${item.status} / 마감: ${item.dueDate}
+훅: ${item.hook}
+CTA: ${item.cta}`).join("\n\n");
+      toast(`${created.length}개 초안을 ${status} 상태로 저장했습니다.`);
+      setView("content");
+    }
+
     function makeClaudePrompt() {
       const type = document.getElementById("aiType").value;
       const typeLabel = document.getElementById("aiType").selectedOptions[0].textContent;
@@ -1440,6 +1598,7 @@ ${strategyGuide}
 
     async function generateWithClaude() {
       const settings = loadClaudeSettings();
+      lastAiDraft = null;
       if (!settings.apiKey) {
         alert("먼저 Claude API 키를 입력하고 설정 저장을 눌러주세요.");
         document.getElementById("claudeKey").focus();
@@ -1510,7 +1669,11 @@ ${draft.cta || ""}
 제작 메모:
 ${draft.notes || ""}${variants}`;
     }
-    function saveAiAsContent() {
+    async function generateAndSaveWithClaude() {
+      await generateWithClaude();
+      if (lastAiDraft) saveAiAsContent("검토");
+    }
+    function saveAiAsContent(statusOverride = "기획") {
       if (!lastAiDraft) {
         alert("먼저 Claude로 콘텐츠를 생성해주세요.");
         return;
@@ -1524,7 +1687,7 @@ ${draft.notes || ""}${variants}`;
         channel,
         format: formatMap[type] || "블로그 글",
         dueDate: addDays(3),
-        status: "기획",
+        status: statusOverride,
         campaignId: document.getElementById("aiCampaign").value,
         priority: "중간",
         target: lastAiDraft.target || document.getElementById("aiTarget").value,
@@ -1537,8 +1700,9 @@ ${draft.notes || ""}${variants}`;
       };
       state.items.push(item);
       saveState();
+      activeStatus = statusOverride;
       renderAll();
-      toast("생성 결과를 콘텐츠로 저장했습니다.");
+      toast(`생성 결과를 ${statusOverride} 상태로 저장했습니다.`);
       setView("content");
     }
     async function copyAiResult() {
